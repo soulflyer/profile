@@ -23,6 +23,9 @@ fi
 if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
     . /opt/local/share/git-core/git-prompt.sh
 fi
+
+#  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
+#
 #  Customize BASH PS1 prompt to show current GIT repository and branch.
 #  by Mike Stewart - http://MediaDoneRight.com
 
