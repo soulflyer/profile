@@ -1,6 +1,4 @@
-
-# MacPorts Installer addition on 2011-02-27_at_00:12:57: adding an appropriate PATH variable for use with MacPorts.
-export PATH=~/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Emacs.app/Contents/MacOS:/opt/local/bin:$PATH
+export PATH=~/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Emacs.app/Contents/MacOS:/opt/local/bin:/opt/local/sbin:$PATH
 # Finished adapting your PATH environment variable for use with MacPorts.
 PS1="\W: "
 export PS1
@@ -15,11 +13,6 @@ function um(){
 }
 EDITOR="emacsclient -nw"
 export EDITOR
-
-# MacPorts Installer addition on 2012-07-22_at_09:50:53: adding an appropriate PATH variable for use with MacPorts.
-export PATH=/opt/local/bin:/opt/local/sbin:$PATH
-# Finished adapting your PATH environment variable for use with MacPorts.
-
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
