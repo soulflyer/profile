@@ -122,8 +122,14 @@ export PS1='$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
-    # @4 - Clean repository - nothing to commit
-    echo "'$Green'"$(__git_ps1 "(%s) "); \
+    $(echo `git status` | grep "Your branch" > /dev/null 2>&1); \
+    if [ $? -eq "0" ]; then \
+      # @4 - Clean repository - nothing to commit
+      echo "'$IYellow'"$(__git_ps1 "('$Green'%s'$IYellow') "); \
+    else \
+      # - Clean repository and pushed to origin
+      echo "'$Green'"$(__git_ps1 "(%s) "); \
+    fi; \
   else \
     # @5 - Changes to working tree
     echo "'$Red'"$(__git_ps1 "(%s) "); \
