@@ -1,16 +1,15 @@
-export PATH=~/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Emacs.app/Contents/MacOS:/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=~/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Emacs.app/Contents/MacOS:/usr/local/bin:/opt/local/bin:/opt/local/sbin:$PATH
 # Finished adapting your PATH environment variable for use with MacPorts.
-PS1="\W: "
-export PS1
-#alas emacs="emacs -nw"
+
 alias ec="emacsclient -nw"
-# alias tm="tmux attach"
 alias ls="ls -G"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
+
 function um(){
   diskutil unmount /Volumes/$1;
 }
+
 EDITOR="emacsclient -nw"
 export EDITOR
 
