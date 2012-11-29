@@ -24,6 +24,8 @@ if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
 fi
 
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
+#  Ugly code, but it works. Setting PS1 might be better in a function like this:
+#  https://gist.github.com/47267
 #
 #  Customize BASH PS1 prompt to show current GIT repository and branch.
 #  by Mike Stewart - http://MediaDoneRight.com
