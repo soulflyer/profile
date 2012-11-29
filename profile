@@ -137,3 +137,11 @@ else \
   # @2 - Prompt when not in GIT repo
   echo "'$Yellow$PathFull$Color_Off': "; \
 fi)'
+
+# xtend git with hub. See http://defunkt.io/hub/ for more details.
+# This is where to look if terminal response seems slow.
+# the next bit is the output of hub alias
+
+# Wrap git automatically by adding the following to ~/.bash_profile:
+
+eval "$(hub alias -s)"
