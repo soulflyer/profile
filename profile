@@ -146,4 +146,8 @@ fi)'
 
 # Wrap git automatically by adding the following to ~/.bash_profile:
 
-eval "$(hub alias -s)"
+# eval "$(hub alias -s)"
+# commented out because it slows down command line response too much
+# changing references in the PS1 section above to include the whole path to git didn't help
+
+alias gh=hub
