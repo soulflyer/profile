@@ -134,7 +134,7 @@ if [ $? -eq 0 ]; then \
   else \
     # @5 - Changes to working tree
     echo "'$Red'"$(__git_ps1 "(%s) "); \
-  fi) '$Yellow$PathFull$Color_Off': "; \
+  fi) '$Green$PathFull$Color_Off': "; \
 else \
   # @2 - Prompt when not in GIT repo
   echo "'$Yellow$PathFull$Color_Off': "; \
