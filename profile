@@ -6,6 +6,8 @@ alias ls="ls -G"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 
+shopt -s histappend
+
 function um(){
   diskutil unmount /Volumes/$1;
 }
