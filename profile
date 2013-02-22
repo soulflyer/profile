@@ -5,6 +5,7 @@ alias ec="emacsclient -nw"
 alias ls="ls -G"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
+alias zi="sudo zypper install"
 
 shopt -s histappend
 
