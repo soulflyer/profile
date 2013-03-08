@@ -1,4 +1,4 @@
-hostspecific=.`hostname | sed s/\.local//`.profile
+hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
 if [ -f ./$hostspecific ]
 then
 . ./$hostspecific
@@ -12,6 +12,8 @@ alias ec="emacsclient -nw"
 alias ls="ls -G"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
+alias bb="ssh blackbook.local"
+alias mi="ssh mimi.local"
 
 shopt -s histappend
 
