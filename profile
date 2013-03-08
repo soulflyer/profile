@@ -9,7 +9,7 @@ fi
 # Finished adapting your PATH environment variable for use with MacPorts.
 
 alias ec="emacsclient -nw"
-alias ls="ls -G"
+
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias bb="ssh blackbook.local"
