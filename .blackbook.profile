@@ -1,2 +1,2 @@
-PS1START=`hostname | sed s/\.local// | sed s/\.site//`
+PS1START="Blackbook "
 alias zi="sudo zypper install"
