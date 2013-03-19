@@ -6,7 +6,8 @@ else
 echo $hostspecific not found
 fi
 
-# Finished adapting your PATH environment variable for use with MacPorts.
+# Disable xon xoff so it doesn't interfere with C-s for forward search command history
+stty -ixon
 
 alias ec="emacsclient -nw"
 
