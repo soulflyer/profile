@@ -15,6 +15,7 @@ alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias bb="ssh blackbook.local"
 alias mi="ssh mimi.local"
+alias co="cordova"
 
 shopt -s histappend
 
