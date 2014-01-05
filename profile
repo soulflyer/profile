@@ -16,6 +16,7 @@ alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias bb="ssh blackbook.local"
 alias mi="ssh mimi.local"
 alias co="cordova"
+alias cb="cordova build"
 
 shopt -s histappend
 
