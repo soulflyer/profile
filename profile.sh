@@ -39,7 +39,7 @@ if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
     . /opt/local/share/git-core/git-prompt.sh
 fi
 
-source ~/.git-promt.sh
+source ~/.git-prompt.sh
 
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 #  Ugly code, but it works. Setting PS1 might be better in a function like this:
