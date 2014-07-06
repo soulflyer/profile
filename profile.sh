@@ -93,11 +93,11 @@ if [ $? -eq 0 ]; then \
   if [ "$?" -eq "0" ]; then \
     $(echo `git status` | grep "Your branch is up-to-date" > /dev/null 2>&1); \
     if [ $? -eq "0" ]; then \
-      # @4 - Clean repository - nothing to commit
-      echo "'$IYellow'"$(__git_ps1 "('$Green'%s'$IYellow') "); \
-    else \
       # - Clean repository and pushed to origin
       echo "'$Green'"$(__git_ps1 "(%s) "); \
+    else \
+      # @4 - Clean repository - nothing to commit
+      echo "'$IYellow'"$(__git_ps1 "('$Green'%s'$IYellow') "); \
     fi; \
   else \
     # @5 - Changes to working tree
