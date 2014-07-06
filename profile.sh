@@ -91,7 +91,7 @@ export PS1='$PS1START$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
-    $(echo `git status` | grep "Your branch" > /dev/null 2>&1); \
+    $(echo `git status` | grep "Your branch is up-to-date" > /dev/null 2>&1); \
     if [ $? -eq "0" ]; then \
       # @4 - Clean repository - nothing to commit
       echo "'$IYellow'"$(__git_ps1 "('$Green'%s'$IYellow') "); \
