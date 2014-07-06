@@ -39,6 +39,8 @@ if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
     . /opt/local/share/git-core/git-prompt.sh
 fi
 
+source ~/.git-promt.sh
+
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 #  Ugly code, but it works. Setting PS1 might be better in a function like this:
 #  https://gist.github.com/47267
@@ -117,3 +119,4 @@ fi)'
 # changing references in the PS1 section above to include the whole path to git didn't help
 
 alias gh=hub
+pushd .
