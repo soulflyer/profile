@@ -23,6 +23,9 @@ alias gc="open /Applications/Google\ Chrome.app"
 
 shopt -s histappend
 
+alias t2="tree -C -L 2"
+alias t3="tree -C -L 3"
+alias t4="tree -C -L 4"
 
 function t(){
     TROPTS=""
