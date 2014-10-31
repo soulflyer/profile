@@ -19,8 +19,19 @@ alias co="cordova"
 alias cb="cordova build"
 alias aw="add-watermark"
 alias ecp="export-customer-photos"
+alias gc="open /Applications/Google\ Chrome.app"
 
 shopt -s histappend
+
+
+function t(){
+    TROPTS=""
+    if [ $1 ]
+    then
+        TROPTS=" -C -L $*"
+    fi
+    tree $TROPTS
+}
 
 function um(){
   diskutil unmount /Volumes/$1;
@@ -34,6 +45,7 @@ export EDITOR
 if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
     . /opt/local/etc/profile.d/bash_completion.sh
 fi
+
 
 if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
     . /opt/local/share/git-core/git-prompt.sh
