@@ -10,6 +10,7 @@ fi
 stty -ixon
 
 alias ec="emacsclient -nw"
+alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
