@@ -112,14 +112,4 @@ else \
   echo "'$Blue$PathFull$Color_Off': "; \
 fi)'
 
-# xtend git with hub. See http://defunkt.io/hub/ for more details.
-# This is where to look if terminal response seems slow.
-# the next bit is the output of hub alias
-
-# Wrap git automatically by adding the following to ~/.bash_profile:
-
-# eval "$(hub alias -s)"
-# commented out because it slows down command line response too much
-# changing references in the PS1 section above to include the whole path to git didn't help
-
 pushd .
