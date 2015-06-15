@@ -97,7 +97,7 @@ if [ $? -eq 0 ]; then \
     $(echo `git status` | grep "Your branch is ahead" > /dev/null 2>&1); \
     if [ $? -eq "0" ]; then \
       # @4 - Clean repository - nothing to commit
-      echo "'$IYellow'"$(__git_ps1 "(%s) "); \
+      echo "'$Yellow'"$(__git_ps1 "(%s) "); \
     else \
       # - Clean repository and pushed to origin
       echo "'$Green'"$(__git_ps1 "(%s) "); \
