@@ -5,6 +5,7 @@ then
 else
 echo $hostspecific not found
 fi
+export PATH=~/bin:$PAth
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 stty -ixon
