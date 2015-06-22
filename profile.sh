@@ -14,13 +14,7 @@ alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
-alias bb="ssh blackbook.local"
 alias mi="ssh mimi.local"
-alias co="cordova"
-alias cb="cordova build"
-alias aw="add-watermark"
-alias ecp="export-customer-photos"
-alias gc="open /Applications/Google\ Chrome.app"
 
 shopt -s histappend
 
@@ -28,7 +22,7 @@ alias t2="tree -C -L 2"
 alias t3="tree -C -L 3"
 alias t4="tree -C -L 4"
 
-function t(){
+t(){
     TROPTS=""
     if [ $1 ]
     then
@@ -37,9 +31,6 @@ function t(){
     tree $TROPTS
 }
 
-function um(){
-  diskutil unmount /Volumes/$1;
-}
 man() {
     env \
         LESS_TERMCAP_mb=$(printf "\e[1;31m") \
@@ -55,8 +46,6 @@ man() {
 EDITOR="emacsclient -nw"
 export EDITOR
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-
 if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
     . /opt/local/etc/profile.d/bash_completion.sh
 fi
@@ -66,7 +55,7 @@ if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
     . /opt/local/share/git-core/git-prompt.sh
 fi
 
-source ~/.git-prompt.sh
+# source ~/.git-prompt.sh
 
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 #  Ugly code, but it works. Setting PS1 might be better in a function like this:
@@ -111,20 +100,19 @@ NewLine="\n"
 Jobs="\j"
 
 
-# This PS1 snippet was adopted from code for MAC/BSD I saw from: http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
-# I tweaked it to work on UBUNTU 11.04 & 11.10 plus made it mo' better
+# This PS1 snippet was adopted from code for MAC/BSD http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
 
 export PS1='$PS1START$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
-    $(echo `git status` | grep "Your branch is up-to-date" > /dev/null 2>&1); \
+    $(echo `git status` | grep "Your branch is ahead" > /dev/null 2>&1); \
     if [ $? -eq "0" ]; then \
+      # @4 - Clean repository - nothing to commit
+      echo "'$Yellow'"$(__git_ps1 "(%s) "); \
+    else \
       # - Clean repository and pushed to origin
       echo "'$Green'"$(__git_ps1 "(%s) "); \
-    else \
-      # @4 - Clean repository - nothing to commit
-      echo "'$IYellow'"$(__git_ps1 "('$Green'%s'$IYellow') "); \
     fi; \
   else \
     # @5 - Changes to working tree
@@ -135,15 +123,4 @@ else \
   echo "'$Blue$PathFull$Color_Off': "; \
 fi)'
 
-# xtend git with hub. See http://defunkt.io/hub/ for more details.
-# This is where to look if terminal response seems slow.
-# the next bit is the output of hub alias
-
-# Wrap git automatically by adding the following to ~/.bash_profile:
-
-# eval "$(hub alias -s)"
-# commented out because it slows down command line response too much
-# changing references in the PS1 section above to include the whole path to git didn't help
-
-alias gh=hub
 pushd .
