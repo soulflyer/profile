@@ -1,3 +1,4 @@
+#!/bin/bash
 source ~/.git-prompt.sh
 alias gc="open /Applications/Google\ Chrome.app"
 alias aw="add-watermark"
@@ -5,7 +6,7 @@ alias ecp="export-customer-photos"
 
 
 function um(){
-  diskutil unmount /Volumes/$1;
+  diskutil unmount "/Volumes/$1";
 }
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*

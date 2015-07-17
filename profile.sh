@@ -1,7 +1,7 @@
 hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
-if [ -f ~/$hostspecific ]
+if [ -f ~/"$hostspecific" ]
 then
-. ~/$hostspecific
+. ~/"$hostspecific"
 else
 echo $hostspecific not found
 fi
