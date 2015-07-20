@@ -1,3 +1,4 @@
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
 if [ -f ~/"$hostspecific" ]
 then
@@ -5,7 +6,7 @@ then
 else
 echo $hostspecific not found
 fi
-export PATH=~/bin:$PATH
+export PATH=~/bin:/usr/local/bin:$PATH
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 stty -ixon
