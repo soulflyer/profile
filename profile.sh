@@ -45,6 +45,17 @@ man() {
         man "$@"
 }
 
+pd() {
+    if [ $1 ]
+    then
+        pushd $1
+    else
+        cd
+    fi
+}
+
+alias cd=pd
+
 EDITOR="emacsclient -nw"
 export EDITOR
 
