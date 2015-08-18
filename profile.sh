@@ -48,7 +48,7 @@ man() {
 pd() {
     if [ $1 ]
     then
-        pushd $1
+        pushd $1 > /dev/null
     else
         cd
     fi
