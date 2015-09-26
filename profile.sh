@@ -9,7 +9,7 @@ fi
 export PATH=~/bin:/usr/local/bin:$PATH
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
-stty -ixon
+#stty -ixon
 
 alias ec="emacsclient -nw"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
@@ -66,6 +66,10 @@ fi
 
 if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
     . /opt/local/share/git-core/git-prompt.sh
+fi
+
+if [ -f /usr/lib/git-core/git-sh-prompt ]; then
+    . /usr/lib/git-core/git-sh-prompt
 fi
 
 # source ~/.git-prompt.sh
