@@ -1,5 +1,8 @@
 #!/bin/bash
 source ~/.git-prompt.sh
+if [ -f /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash ]; then
+    . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash
+fi
 alias gc="open /Applications/Google\ Chrome.app"
 alias aw="add-watermark"
 alias ecp="export-customer-photos"
