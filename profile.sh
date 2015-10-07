@@ -24,6 +24,9 @@ alias t2="tree -C -L 2"
 alias t3="tree -C -L 3"
 alias t4="tree -C -L 4"
 
+alias oi="offlineimap"
+alias oid="offlineimap -d maildir"
+
 t(){
     TROPTS=""
     if [ $1 ]
@@ -45,7 +48,7 @@ man() {
         man "$@"
 }
 
-pd() {
+pushdir() {
     if [ $1 ]
     then
         pushd $1 > /dev/null
@@ -54,7 +57,11 @@ pd() {
     fi
 }
 
-alias cd=pd
+alias cd=pushdir
+alias pd=popd
+alias tb="tm ~/Code/backup"
+alias tp="tm ~/Code/profile"
+alias te="tm ~/Code/emacs-live"
 
 EDITOR="emacsclient -nw"
 export EDITOR
