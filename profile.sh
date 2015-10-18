@@ -27,6 +27,13 @@ alias t4="tree -C -L 4"
 alias oi="offlineimap"
 alias oid="offlineimap -d maildir"
 
+alias ga="git add ."
+gc(){
+    MESSAGE="\"$@\""
+    git commit -m $MESSAGE
+}
+alias gp="git push origin"
+
 t(){
     TROPTS=""
     if [ $1 ]
