@@ -1,4 +1,3 @@
-echo "hello from .bashrc"
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
 if [ -f ~/"$hostspecific" ]
@@ -18,8 +17,6 @@ alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias mi="ssh mimi.local"
-
-shopt -s histappend
 
 alias t2="tree -C -L 2"
 alias t3="tree -C -L 3"
@@ -156,3 +153,9 @@ else \
 fi)'
 
 export PROMPT_COMMAND='echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >> ~/.logs/bash-history-$(date "+%Y-%m").log'
+
+export HH_CONFIG=hicolor
+shopt -s histappend
+export HISTFILESIZE=10000
+export HISTSIZE=${HISTFILESIZE}
+export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
