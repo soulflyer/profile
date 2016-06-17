@@ -1,12 +1,10 @@
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+#export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
 if [ -f ~/"$hostspecific" ]
 then
 . ~/"$hostspecific"
-else
-echo $hostspecific not found
 fi
-export PATH=~/bin:/usr/local/bin:$PATH
+export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
