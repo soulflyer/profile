@@ -60,8 +60,8 @@ pushdir() {
     fi
 }
 
-alias cd=pushdir
-alias pd=popd
+alias pu=pushdir
+alias po=popd
 alias tb="tm ~/Code/backup"
 alias tp="tm ~/Code/profile"
 alias te="tm ~/Code/emacs-live"

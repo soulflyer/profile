@@ -13,5 +13,5 @@ function um(){
   diskutil unmount "/Volumes/$1";
 }
 
-export PATH=/usr/local/mysql/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Emacs.app/Contents/MacOS:/opt/local/bin:/opt/local/sbin:~/Library/Android/sdk/tools:~/Library/Android/sdk/platform-tools:~/Code/moai-dev/bin/osx:/opt/X11/bin:/Applications/Hugin/HuginTools:/Applications/Wine\ Devel.app/Contents/Resources/wine/bin:$PATH
+export PATH=/Applications/Wine\ Stable/Contents/Resources/wine/bin:/usr/local/nmh/bin:/usr/local/mysql/bin:/Applications/Emacs.app/Contents/MacOS/bin:/Applications/Emacs.app/Contents/MacOS:/opt/local/bin:/opt/local/sbin:~/Library/Android/sdk/tools:~/Library/Android/sdk/platform-tools:~/Code/moai-dev/bin/osx:/opt/X11/bin:/Applications/Hugin/HuginTools:/Users/iain/anaconda/bin:$PATH
 alias ls="ls -G"
