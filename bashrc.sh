@@ -29,6 +29,7 @@ alias ga="git add ."
 alias gc="git commit -m"
 alias gp="git push origin"
 alias gd="git diff"
+alias gl="git log --pretty=oneline --abbrev-commit"
 
 t(){
     TROPTS=""
@@ -157,3 +158,5 @@ shopt -s histappend
 export HISTFILESIZE=10000
 export HISTSIZE=${HISTFILESIZE}
 export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
+
+export PATH=/Users/iain/.local/bin:$PATH
