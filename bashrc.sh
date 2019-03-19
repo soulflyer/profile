@@ -65,7 +65,10 @@ alias pu=pushdir
 alias po=popd
 alias tb="tm ~/Code/backup"
 alias tp="tm ~/Code/profile"
-alias te="tm ~/Code/emacs-live"
+alias te="tm ~/Code/emacs-live-pack"
+alias td="tm ~/Code/emacs.d"
+alias th="tm ~/Code/Clojure/Descjop/hinh-anh"
+alias ta="tm ~/Code/Clojure/Luminus/photo-api"
 
 EDITOR="emacsclient -nw"
 export EDITOR
@@ -160,3 +163,15 @@ export HISTSIZE=${HISTFILESIZE}
 export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 export PATH=/Users/iain/.local/bin:$PATH
+export STARCITY_SECRETS=/Users/iain/Code/Flexiana/Starcity/.starcity-web-secrets.edn
+
+tz() {
+    [[ $1 != "" ]] && time=$1 || time=`date  "+%H"`
+    local offset=$(($time - $(date "+%H")))
+    [[ $offset < 0 ]] && offset=$(( offset + 24 ))
+    echo "Josh    " $( TZ=America/New_York date -v "+"$offset"H" "+%H:%M")
+    echo "UK      " $( TZ=Europe/London    date -v "+"$offset"H" "+%H:%M")
+    echo "CET     " $( TZ=Europe/Prague    date -v "+"$offset"H" "+%H:%M")
+    echo "Sergey  " $( TZ=Europe/Moscow    date -v "+"$offset"H" "+%H:%M")
+    echo "Vietnam " $( TZ=Asia/Saigon      date -v "+"$offset"H" "+%H:%M")
+}
