@@ -166,8 +166,11 @@ export PATH=/Users/iain/.local/bin:$PATH
 export STARCITY_SECRETS=/Users/iain/Code/Flexiana/Starcity/.starcity-web-secrets.edn
 
 tz() {
-    [[ $1 != "" ]] && time=$1 || time=`date  "+%H"`
-    local offset=$(($time - $(date "+%H")))
+    hournow=`date "+%H"`
+    hournow=${hournow#0}
+    [[ $1 != "" ]] && time=$1 || time=$hournow
+    echo "Time is " $time
+    local offset=$(($time - $hournow))
     [[ $offset < 0 ]] && offset=$(( offset + 24 ))
     echo "Josh    " $( TZ=America/New_York date -v "+"$offset"H" "+%H:%M")
     echo "UK      " $( TZ=Europe/London    date -v "+"$offset"H" "+%H:%M")
