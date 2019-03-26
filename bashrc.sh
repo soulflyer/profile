@@ -1,9 +1,7 @@
 #export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
-echo "running on " $hostspecific
 if [ -f ~/"$hostspecific" ]
 then
-    echo "Found host specific profile"
     . ~/"$hostspecific"
 fi
 export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin

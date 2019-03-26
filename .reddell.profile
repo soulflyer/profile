@@ -1,5 +1,5 @@
 source /usr/lib/git-core/git-sh-prompt
-echo "hello from reddell.profile"
+
 ga() {
     echo "Setting gamma to remove blue cast"
     xgamma -bgamma 0.8
