@@ -8,6 +8,10 @@ export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
+export MOUSE_MAC_ADDR="b8-f6-b1-22-b1-02"
+export KEYBOARD_MAC_ADDR="7c-c3-a1-89-e0-ac"
+alias cm="bluetoothconnector --connect $MOUSE_MAC_ADDR    --notify"
+alias ck="bluetoothconnector --connect $KEYBOARD_MAC_ADDR --notify"
 
 alias ec="emacsclient -nw"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
@@ -15,6 +19,8 @@ alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias mi="ssh mimi.local"
+
+alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 
 alias t2="tree -C -L 2"
 alias t3="tree -C -L 3"
@@ -69,6 +75,7 @@ alias te="tm ~/Code/emacs-live-pack"
 alias td="tm ~/Code/emacs.d"
 alias th="tm ~/Code/Clojure/Descjop/hinh-anh"
 alias ta="tm ~/Code/Clojure/Luminus/photo-api"
+alias tl="tm ~/Code/Clojure/image-lib"
 
 EDITOR="emacsclient -nw"
 export EDITOR
@@ -173,9 +180,11 @@ tz() {
     [[ $1 != "" ]] && time=$1 || time=$hournow
     local offset=$(($time - $hournow))
     [[ $offset < 0 ]] && offset=$(( offset + 24 ))
-    echo "Josh    " $( TZ=America/New_York date -v "+"$offset"H" "+%H:%M")
-    echo "UK      " $( TZ=Europe/London    date -v "+"$offset"H" "+%H:%M")
-    echo "CET     " $( TZ=Europe/Prague    date -v "+"$offset"H" "+%H:%M")
-    echo "Sergey  " $( TZ=Europe/Moscow    date -v "+"$offset"H" "+%H:%M")
-    echo "Vietnam " $( TZ=Asia/Saigon      date -v "+"$offset"H" "+%H:%M")
+    echo "Josh    " $( TZ=America/Los_Angeles date -v "+"$offset"H" "+%H")
+    echo "Eduardo " $( TZ=America/New_York    date -v "+"$offset"H" "+%H")
+    echo "GMT     " $( TZ=GMT                 date -v "+"$offset"H" "+%H")
+    echo "UK      " $( TZ=Europe/London       date -v "+"$offset"H" "+%H")
+    echo "CET     " $( TZ=Europe/Prague       date -v "+"$offset"H" "+%H")
+    echo "Sergey  " $( TZ=Europe/Moscow       date -v "+"$offset"H" "+%H")
+    echo "Vietnam " $( TZ=Asia/Saigon         date -v "+"$offset"H" "+%H")
 }
