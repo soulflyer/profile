@@ -4,7 +4,6 @@ if [ -f ~/"$hostspecific" ]
 then
     . ~/"$hostspecific"
 fi
-export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
@@ -12,6 +11,11 @@ export MOUSE_MAC_ADDR="b8-f6-b1-22-b1-02"
 export KEYBOARD_MAC_ADDR="7c-c3-a1-89-e0-ac"
 alias cm="bluetoothconnector --connect $MOUSE_MAC_ADDR    --notify"
 alias ck="bluetoothconnector --connect $KEYBOARD_MAC_ADDR --notify"
+cb(){
+    echo "connecting bluetooth devices"
+    cm&
+    ck&
+}
 
 alias ec="emacsclient -nw"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
