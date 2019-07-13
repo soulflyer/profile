@@ -4,6 +4,8 @@ if [ -f ~/"$hostspecific" ]
 then
     . ~/"$hostspecific"
 fi
+export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
+source ./secrets.sh
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
