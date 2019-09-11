@@ -16,8 +16,11 @@ alias ck="bluetoothconnector --connect $KEYBOARD_MAC_ADDR --notify"
 cb(){
     echo "connecting bluetooth devices"
     cm&
-    ck&
+    # ck&
 }
+
+# Remap § to ` for English keyboard
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
 
 alias ec="emacsclient -nw"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
@@ -176,7 +179,6 @@ export HISTSIZE=${HISTFILESIZE}
 export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 export PATH=/Users/iain/.local/bin:$PATH
-export STARCITY_SECRETS=/Users/iain/Code/Flexiana/Starcity/.starcity-web-secrets.edn
 
 tz() {
     # Can take a single parameter representing the hour, or none for current time
