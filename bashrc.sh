@@ -6,6 +6,11 @@ then
 fi
 export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 source ~/Code/profile/secrets.sh
+source ~/Code/profile/java.sh
+source ~/Code/profile/tmux-commands.sh
+
+export D42ONE_CONFDIR=/Users/iain/Code/Flexiana/Data-42/d42one-release-conf/d42one-conf.d
+export D42ONE_LIBDIR=/Users/iain/Code/Flexiana/Data-42/d42one-release-conf/d42lib
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
@@ -16,11 +21,11 @@ alias ck="bluetoothconnector --connect $KEYBOARD_MAC_ADDR --notify"
 cb(){
     echo "connecting bluetooth devices"
     cm&
-    # ck&
+    ck&
 }
 
 # Remap § to ` for English keyboard
-hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
+# hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
 
 alias ec="emacsclient -nw"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
@@ -85,6 +90,7 @@ alias td="tm ~/Code/emacs.d"
 alias th="tm ~/Code/Clojure/Descjop/hinh-anh"
 alias ta="tm ~/Code/Clojure/Luminus/photo-api"
 alias tl="tm ~/Code/Clojure/image-lib"
+alias tt="tm ~/Code/tm"
 
 EDITOR="emacsclient -nw"
 export EDITOR
@@ -196,3 +202,7 @@ tz() {
     echo "Sergey  " $( TZ=Europe/Moscow       date -v "+"$offset"H" "+%H")
     echo "Vietnam " $( TZ=Asia/Saigon         date -v "+"$offset"H" "+%H")
 }
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
