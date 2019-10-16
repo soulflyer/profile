@@ -9,6 +9,7 @@ source ~/Code/profile/secrets.sh
 source ~/Code/profile/java.sh
 source ~/Code/profile/tmux-commands.sh
 
+source ~/Code/profile/data42-config.sh
 export D42ONE_CONFDIR=/Users/iain/Code/Flexiana/Data-42/d42one-release-conf/d42one-conf.d
 export D42ONE_LIBDIR=/Users/iain/Code/Flexiana/Data-42/d42one-release-conf/d42lib
 
