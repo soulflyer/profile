@@ -3,6 +3,7 @@
                   [lein-binplus "0.6.5"]
                   [lein-cloverage "1.1.2"]
                   [lein-kibit "0.1.7"]
+                  [lein-midje "3.2.1"]
                   [lein-nvd "1.3.0"]
                   [venantius/yagni "0.1.7"]
                   [com.roomkey/lein-v "7.1.0"]]}}
