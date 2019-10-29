@@ -185,6 +185,11 @@ export HISTFILESIZE=10000
 export HISTSIZE=${HISTFILESIZE}
 export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
+# This disables the suspend command so that ctrl-s will search command history
+stty -ixon
+
+HISTTIMEFORMAT="%a %H:%m "
+
 export PATH=/Users/iain/.local/bin:$PATH
 
 tz() {
