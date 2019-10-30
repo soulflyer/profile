@@ -6,6 +6,8 @@ if [ -f /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-comple
     . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash
 fi
 
+__git_complete gp _git_checkout
+
 export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 

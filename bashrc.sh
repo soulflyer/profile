@@ -86,12 +86,12 @@ alias pu=pushdir
 alias po=popd
 alias tb="tm ~/Code/backup"
 alias tp="tm ~/Code/profile"
-alias te="tm ~/Code/emacs-live-pack"
-alias td="tm ~/Code/emacs.d"
+alias te="tm ~/Code/emacs.d"
 alias th="tm ~/Code/Clojure/Descjop/hinh-anh"
 alias ta="tm ~/Code/Clojure/Luminus/photo-api"
-alias tl="tm ~/Code/Clojure/image-lib"
+alias ti="tm ~/Code/Clojure/image-lib"
 alias tt="tm ~/Code/tm"
+alias td="tm ~/Code/Flexiana/Data-42"
 
 EDITOR="emacsclient -nw"
 export EDITOR
