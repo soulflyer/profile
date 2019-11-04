@@ -47,3 +47,24 @@ hana-test(){
 hana-dev(){
     hana d42one.dev.rc
 }
+
+oc(){
+    if [ -x ./control.sh ]
+    then
+        ./control.sh $@
+    else
+        echo "please cd to the directory containing the optimist install you wish to control"
+    fi
+}
+
+start(){
+    oc start-all
+}
+
+stop(){
+    oc stop-all
+}
+
+status(){
+    oc status
+}
