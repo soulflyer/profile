@@ -1,17 +1,20 @@
 ;;; package --- Summary
 ;;; Code:
-;;; Commentary:
+;;; Commentary: package-pack first and bindings-pack last...
 
-(live-use-packs '(stable/package-pack
-                  stable/foundation-pack
-                  stable/colour-pack
-                  stable/lang-pack
-                  stable/power-pack
-                  stable/git-pack
-                  stable/org-pack
-                  stable/clojure-pack
-                  stable/bindings-pack
-                  ~/Code/emacs-live-pack))
+(live-use-packs '(package-pack
+		  foundation-pack
+                  colour-pack
+                  navigation-pack
+                  lang-pack
+                  power-pack
+                  git-pack
+                  org-pack
+                  text-pack
+                  clojure-pack
+                  dired-pack
+                  window-pack
+                  user-pack
+                  bindings-pack))
 
-;; (live-add-packs '(~/Code/emacs-live-pack))
 ;;; .emacs-live.el ends here
