@@ -5,5 +5,11 @@
                   [lein-kibit "0.1.7"]
                   [lein-midje "3.2.1"]
                   [lein-nvd "1.3.0"]
+                  [lein-pprint "1.3.2"]
                   [venantius/yagni "0.1.7"]
-                  [com.roomkey/lein-v "7.1.0"]]}}
+                  [com.roomkey/lein-v "7.1.0"]]}
+
+ ;; :dev {:dependencies [[cider/piggieback "0.4.2"]]
+ ;;       :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
+
+ :repl {:plugins [[cider/cider-nrepl "0.25.0-SNAPSHOT"]]}}

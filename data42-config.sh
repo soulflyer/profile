@@ -41,7 +41,7 @@ hana() {
 }
 
 hana-test(){
-    hana d42one.importer-test-protocol.rc
+    hana d42one.test.rc
 }
 
 hana-dev(){
@@ -57,14 +57,32 @@ oc(){
     fi
 }
 
+start-all(){
+    oc start-all $@
+}
+
+stop-all(){
+    oc stop-all $@
+}
+
 start(){
-    oc start-all
+    oc start $@
 }
 
 stop(){
-    oc stop-all
+    oc stop $@
 }
 
 status(){
     oc status
+}
+
+clear-ac-files(){
+    if [ $D42ONE_AC_EXCHANGE_PATH ]
+    then
+        rm -r $D42ONE_AC_STATE_PATH/*
+        rm -r $D42ONE_AC_EXCHANGE_PATH/*
+    else
+        echo "set D42ONE_AC_STATE_PATH and D42ONE_AC_EXCHANGE_PATH and ensure the directories exist"
+    fi
 }
