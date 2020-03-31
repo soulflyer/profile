@@ -213,9 +213,6 @@ tz() {
     echo "Vietnam " $( TZ=Asia/Saigon         date -v "+"$offset"H" "+%H")
 }
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 listening() {
     if [ $# -eq 0 ]; then
@@ -226,5 +223,3 @@ listening() {
         echo "Usage: listening [pattern]"
     fi
 }
-
-eval "$(thefuck --alias)"
