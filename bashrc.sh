@@ -5,8 +5,7 @@ then
     . ~/"$hostspecific"
 fi
 export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
-source ~/Code/profile/secrets.sh
-source ~/Code/profile/java.sh
+
 source ~/Code/profile/tmux-commands.sh
 
 source ~/Code/profile/data42-config.sh
@@ -16,15 +15,6 @@ source $D42ONE_CONFDIR/d42one.rc
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
-export MOUSE_MAC_ADDR="b8-f6-b1-22-b1-02"
-export KEYBOARD_MAC_ADDR="7c-c3-a1-89-e0-ac"
-alias cm="bluetoothconnector --connect $MOUSE_MAC_ADDR    --notify"
-alias ck="bluetoothconnector --connect $KEYBOARD_MAC_ADDR --notify"
-cb(){
-    echo "connecting bluetooth devices"
-    cm&
-    ck&
-}
 
 # Remap § to ` for English keyboard
 # hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
@@ -37,7 +27,7 @@ alias la="ls -la"
 
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
-alias mi="ssh mimi.local"
+alias mi="ssh mimi"
 
 alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 
@@ -45,9 +35,9 @@ alias t2="tree -C -L 2"
 alias t3="tree -C -L 3"
 alias t4="tree -C -L 4"
 
-alias oi="offlineimap"
-alias oid="offlineimap -d maildir"
-alias oii="offlineimap -f ~/Mail/INBOX"
+# alias oi="offlineimap"
+# alias oid="offlineimap -d maildir"
+# alias oii="offlineimap -f ~/Mail/INBOX"
 
 alias gs="git status"
 alias ga="git add ."

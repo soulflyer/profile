@@ -12,10 +12,22 @@ export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
 [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
 source ~/Code/profile/kubernetes.sh
+source ~/Code/profile/secrets.sh
+source ~/Code/profile/java.sh
 
 alias aw="add-watermark"
 alias ecp="export-customer-photos"
 alias ce="EDITOR=vi crontab -e"
+
+export MOUSE_MAC_ADDR="b8-f6-b1-22-b1-02"
+export KEYBOARD_MAC_ADDR="7c-c3-a1-89-e0-ac"
+alias cm="bluetoothconnector --connect $MOUSE_MAC_ADDR    --notify"
+alias ck="bluetoothconnector --connect $KEYBOARD_MAC_ADDR --notify"
+cb(){
+    echo "connecting bluetooth devices"
+    cm&
+    ck&
+}
 
 function um(){
   diskutil unmount "/Volumes/$1";
