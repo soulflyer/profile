@@ -24,6 +24,7 @@ alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 
 alias ll="ls -l"
 alias la="ls -la"
+alias jps="jps -l"
 
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
