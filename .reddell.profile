@@ -1,4 +1,6 @@
 source /usr/lib/git-core/git-sh-prompt
+export PS1START="Reddell:"
+alias ls="ls --color"
 
 ga() {
     echo "Setting gamma to remove blue cast"

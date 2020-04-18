@@ -1,5 +1,6 @@
 #export PATH=/usr/bin:/bin:/usr/sbin:/sbin
-hostspecific=.`hostname | sed s/\.local// | sed s/\.site//`.profile
+hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`.profile
+echo "local profile filename: $hostspecific"
 if [ -f ~/"$hostspecific" ]
 then
     . ~/"$hostspecific"
@@ -9,8 +10,8 @@ export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 source ~/Code/profile/tmux-commands.sh
 
 source ~/Code/profile/data42-config.sh
-export D42ONE_CONFDIR=/Users/iain/Code/Flexiana/Data-42/d42one-release-conf/d42one-conf.d
-export D42ONE_LIBDIR=/Users/iain/Code/Flexiana/Data-42/d42one-release-conf/d42lib
+export D42ONE_CONFDIR=$HOME/Code/Flexiana/Data-42/d42one-release-conf/d42one-conf.d
+export D42ONE_LIBDIR=$HOME/Code/Flexiana/Data-42/d42one-release-conf/d42lib
 source $D42ONE_CONFDIR/d42one.rc
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
@@ -151,7 +152,7 @@ Jobs="\j"
 
 # This PS1 snippet was adopted from code for MAC/BSD http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
 
-export PS1='$PS1START$(git branch &>/dev/null;\
+export PS1=$Purple'$PS1START'$Color_Off'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
