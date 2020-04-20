@@ -34,6 +34,9 @@ alias jps="jps -l"
 alias tree="tree -C"
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias mi="ssh mimi"
+alias red="ssh reddell"
+alias dev-hana="ssh ec2-user@dev-hana"
+alias acceptance="ssh ubuntu@acceptance"
 
 alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 
