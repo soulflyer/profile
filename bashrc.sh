@@ -1,6 +1,10 @@
-#export PATH=/usr/bin:/bin:/usr/sbin:/sbin
+# If not running interactively, don't do anything
+case $- in
+    *i*) ;;
+    *) return;;
+esac
+
 hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`.profile
-echo "local profile filename: $hostspecific"
 if [ -f ~/"$hostspecific" ]
 then
     . ~/"$hostspecific"
