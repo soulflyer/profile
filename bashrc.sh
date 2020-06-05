@@ -186,7 +186,7 @@ export HH_CONFIG=hicolor
 shopt -s histappend
 export HISTFILESIZE=10000
 export HISTSIZE=${HISTFILESIZE}
-export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
+# export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 # This disables the suspend command so that ctrl-s will search command history
 stty -ixon
