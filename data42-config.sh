@@ -49,21 +49,15 @@ hana-dev(){
 }
 
 oc(){
+    CONFDIR=${D42ONE_CONFDIR:- "~/Code/Flexiana/Data-42/d420ne-release-conf/d42one-conf.d"}
     if [ -x ./control.sh ]
     then
-        ./control.sh $@
+        ./control.sh -c $CONFDIR $@
     else
         echo "please cd to the directory containing the optimist install you wish to control"
     fi
 }
 
-start-all(){
-    oc start-all $@
-}
-
-stop-all(){
-    oc stop-all $@
-}
 
 start(){
     oc start $@
@@ -74,7 +68,17 @@ stop(){
 }
 
 status(){
-    oc status
+    oc status | h Stopped Running Crashed
+}
+
+start-all(){
+    oc start-all $@
+    status
+}
+
+stop-all(){
+    oc stop-all $@
+    status
 }
 
 clear-ac-files(){

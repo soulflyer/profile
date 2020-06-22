@@ -17,6 +17,7 @@ source ~/Code/profile/data42-config.sh
 export D42ONE_CONFDIR=$HOME/Code/Flexiana/Data-42/d42one-release-conf/d42one-conf.d
 export D42ONE_LIBDIR=$HOME/Code/Flexiana/Data-42/d42one-release-conf/d42lib
 source $D42ONE_CONFDIR/d42one.rc
+source ~/Code/profile/h.sh
 
 # Disable xon xoff so it doesn't interfere with C-s for forward search command history
 #stty -ixon
