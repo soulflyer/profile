@@ -28,8 +28,8 @@ source ~/Code/profile/h.sh
 alias ec="emacsclient -nw"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 
-alias ll="ls -l"
-alias la="ls -la"
+alias ll="ls -la"
+alias la="ls -a"
 alias jps="jps -l"
 
 alias tree="tree -C"
