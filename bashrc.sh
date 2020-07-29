@@ -54,7 +54,7 @@ alias ga="git add ."
 alias gc="git commit -m"
 alias gp="git push origin"
 alias gd="git diff"
-alias gl="git log --pretty=oneline --abbrev-commit"
+alias gl="git log --oneline --graph --decorate"
 
 t(){
     TROPTS=""
@@ -185,8 +185,8 @@ export PROMPT_COMMAND='echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >
 
 export HH_CONFIG=hicolor
 shopt -s histappend
-export HISTFILESIZE=10000
-export HISTSIZE=${HISTFILESIZE}
+export HISTFILESIZE=1000000
+export HISTSIZE=10000
 # export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 # This disables the suspend command so that ctrl-s will search command history

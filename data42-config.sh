@@ -84,8 +84,9 @@ stop-all(){
 clear-ac-files(){
     if [ $D42ONE_AC_EXCHANGE_PATH ]
     then
-        rm -r $D42ONE_AC_STATE_PATH/*
-        rm -r $D42ONE_AC_EXCHANGE_PATH/*
+        echo "rm -r $D42ONE_AC_STATE_PATH/*"
+        echo "rm -r $D42ONE_AC_EXCHANGE_PATH/*"
+        echo "Directories not cleared, would need to recreate directories for the buckets"
     else
         echo "set D42ONE_AC_STATE_PATH and D42ONE_AC_EXCHANGE_PATH and ensure the directories exist"
     fi
