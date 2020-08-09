@@ -15,6 +15,8 @@ source ~/Code/profile/kubernetes.sh
 source ~/Code/profile/secrets.sh
 source ~/Code/profile/java.sh
 
+eval "$(zoxide init bash)"
+
 alias aw="add-watermark"
 alias ecp="export-customer-photos"
 alias ce="EDITOR=vi crontab -e"
