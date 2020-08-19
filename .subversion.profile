@@ -15,6 +15,7 @@ source ~/Code/profile/kubernetes.sh
 source ~/Code/profile/secrets.sh
 source ~/Code/profile/java.sh
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 eval "$(zoxide init bash)"
 
 alias aw="add-watermark"
