@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
 # This is where to add any subversion specific PATH entries
-echo "Hello from .subversion_profile"
-PATH=$PATH
+# echo $PATH
+# echo "Hello from .subversion_profile"
+# PATH=$PATH

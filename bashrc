@@ -1,5 +1,6 @@
-echo "Hello from .bashrc"
-#echo $PATH
+#!/usr/bin/env bash
+# echo $PATH
+# echo "Hello from .bashrc"
 
 # If not running interactively, don't do anything
 case $- in
@@ -16,8 +17,6 @@ fi
 source ~/Code/profile/tmux-commands.sh
 source ~/Code/profile/h.sh
 
-# Remap § to ` for English keyboard
-# hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
 
 alias ec="emacsclient -a '' -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
@@ -93,66 +92,28 @@ alias td="tm ~/Code/Flexiana/Data-42"
 EDITOR="emacsclient -nw"
 export EDITOR
 
-# if [ -f /opt/local/etc/profile.d/bash_completion.sh ]; then
-#     . /opt/local/etc/profile.d/bash_completion.sh
-# fi
+# Completion stuff
+# ================
+# https://stackoverflow.com/a/58308956/1671119
+export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
+# This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
+[ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
 
-# if [ -f /opt/local/share/git-core/git-prompt.sh ]; then
-#     . /opt/local/share/git-core/git-prompt.sh
-# fi
-
-# if [ -f /usr/lib/git-core/git-sh-prompt ]; then
-#     . /usr/lib/git-core/git-sh-prompt
-# fi
-
-# source ~/.git-prompt.sh
-
+__git_complete gp _git_checkout
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
-#  Ugly code, but it works. Setting PS1 might be better in a function like this:
-#  https://gist.github.com/47267
-#
-#  Customize BASH PS1 prompt to show current GIT repository and branch.
-#  by Mike Stewart - http://MediaDoneRight.com
+Color_Off="\[\033[0m\]"
+Red="\[\033[0;31m\]"
+Green="\[\033[0;32m\]"
+Yellow="\[\033[0;33m\]"
+Purple="\[\033[0;35m\]"
+Blue="\[\033[0;34m\]"
 
-#  SETUP CONSTANTS
-#  Bunch-o-predefined colors.  Makes reading code easier than escape sequences.
-#  I don't remember where I found this.  o_O
-
-# Reset
-Color_Off="\[\033[0m\]"       # Text Reset
-
-# Regular Colors
-Black="\[\033[0;30m\]"        # Black
-Red="\[\033[0;31m\]"          # Red
-Green="\[\033[0;32m\]"        # Green
-Yellow="\[\033[0;33m\]"       # Yellow
-Blue="\[\033[0;34m\]"         # Blue
-Purple="\[\033[0;35m\]"       # Purple
-Cyan="\[\033[0;36m\]"         # Cyan
-White="\[\033[0;37m\]"        # White
-
-# High Intensty
-IBlack="\[\033[0;90m\]"       # Black
-IRed="\[\033[0;91m\]"         # Red
-IGreen="\[\033[0;92m\]"       # Green
-IYellow="\[\033[0;93m\]"      # Yellow
-IBlue="\[\033[0;94m\]"        # Blue
-IPurple="\[\033[0;95m\]"      # Purple
-ICyan="\[\033[0;96m\]"        # Cyan
-IWhite="\[\033[0;97m\]"       # White
-
-# Various variables you might want for your PS1 prompt instead
-Time12h="\T"
-Time12a="\@"
 PathShort="\w"
 PathFull="\W"
-NewLine="\n"
-Jobs="\j"
 
-
-# This PS1 snippet was adopted from code for MAC/BSD http://allancraig.net/index.php?option=com_content&view=article&id=108:ps1-export-command-for-git&catid=45:general&Itemid=96
-
+# TODO Wrap this in an if checking for existence of __git_ps1 function
 export PS1=$Purple'$PS1START'$Color_Off'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
@@ -174,6 +135,8 @@ else \
   echo "'$Blue$PathFull$Color_Off': "; \
 fi)'
 
+# History stuff
+# =============
 # Not sure this is necessary:
 # export PROMPT_COMMAND='echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >> ~/.logs/bash-history-$(date "+%Y-%m").log'
 

@@ -1,17 +1,19 @@
 #!/usr/bin/env bash
-# bash --version
-echo "hello from .subversion_rc"
-#echo $PATH
 
-source ~/bin/git-prompt.sh
-if [ -f /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash ]; then
-    . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash
-fi
+# Now using hammerspoon to redirect this key.
+# Remap § to ` for English keyboard
+# hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
 
-__git_complete gp _git_checkout
+# source ~/bin/git-prompt.sh
 
-export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+# if [ -f /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash ]; then
+#     . /Applications/Xcode.app/Contents/Developer/usr/share/git-core/git-completion.bash
+# fi
+
+
+
+# export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+# [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
 source ~/Code/profile/kubernetes.sh
 source ~/Code/profile/secrets.sh
