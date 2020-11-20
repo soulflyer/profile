@@ -1,0 +1,3 @@
+# This is where to add any subversion specific PATH entries
+echo "Hello from .subversion_profile"
+PATH=$PATH

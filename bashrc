@@ -1,49 +1,37 @@
+echo "Hello from .bashrc"
+#echo $PATH
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
     *) return;;
 esac
 
-hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`.profile
+hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`_rc
 if [ -f ~/"$hostspecific" ]
 then
     . ~/"$hostspecific"
 fi
-export PATH=~/bin:/usr/local/bin:$PATH:/usr/bin:/bin:/usr/sbin:/sbin
 
 source ~/Code/profile/tmux-commands.sh
-
-source ~/Code/profile/data42-config.sh
-export D42ONE_CONFDIR=$HOME/Code/Flexiana/Data-42/d42one-release-conf/d42one-conf.d
-export D42ONE_LIBDIR=$HOME/Code/Flexiana/Data-42/d42one-release-conf/d42lib
-source $D42ONE_CONFDIR/d42one.rc
 source ~/Code/profile/h.sh
-
-# Disable xon xoff so it doesn't interfere with C-s for forward search command history
-#stty -ixon
 
 # Remap § to ` for English keyboard
 # hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
 
-alias ec="emacsclient -nw"
+alias ec="emacsclient -a '' -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 
 alias ll="ls -la"
 alias la="ls -a"
 alias jps="jps -l"
 
-alias tree="tree -C"
+
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias mi="ssh mimi"
 alias red="ssh reddell"
-alias dev-hana="ssh ec2-user@dev-hana"
-alias acceptance="ssh ubuntu@acceptance"
 
 alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
-
-alias t2="tree -C -L 2"
-alias t3="tree -C -L 3"
-alias t4="tree -C -L 4"
 
 # alias oi="offlineimap"
 # alias oid="offlineimap -d maildir"
@@ -56,6 +44,10 @@ alias gp="git push origin"
 alias gd="git diff"
 alias gl="git log --oneline --graph --decorate"
 
+alias tree="tree -C"
+alias t2="tree -C -L 2"
+alias t3="tree -C -L 3"
+alias t4="tree -C -L 4"
 t(){
     TROPTS=""
     if [ $1 ]
@@ -88,9 +80,10 @@ pushdir() {
 
 alias pu=pushdir
 alias po=popd
+
 alias tb="tm ~/Code/backup"
 alias tp="tm ~/Code/profile"
-alias te="tm ~/Code/emacs.d"
+alias te="tm ~/Code/emacs-iain"
 alias th="tm ~/Code/Clojure/Descjop/hinh-anh"
 alias ta="tm ~/Code/Clojure/Luminus/photo-api"
 alias ti="tm ~/Code/Clojure/image-lib"
@@ -181,20 +174,20 @@ else \
   echo "'$Blue$PathFull$Color_Off': "; \
 fi)'
 
-export PROMPT_COMMAND='echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >> ~/.logs/bash-history-$(date "+%Y-%m").log'
+# Not sure this is necessary:
+# export PROMPT_COMMAND='echo "$(date "+%Y-%m-%d.%H:%M:%S") $(pwd) $(history 1)" >> ~/.logs/bash-history-$(date "+%Y-%m").log'
 
-export HH_CONFIG=hicolor
 shopt -s histappend
+export HISTSIZE=1000000
 export HISTFILESIZE=1000000
-export HISTSIZE=10000
+
+# this would be useful, but odd things seem to happen occasionaly (repeated commands)
 # export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 # This disables the suspend command so that ctrl-s will search command history
 stty -ixon
 
-HISTTIMEFORMAT="%a %H:%m "
-
-export PATH=/Users/iain/.local/bin:$PATH
+HISTTIMEFORMAT="%F %H:%m "
 
 tz() {
     # Can take a single parameter representing the hour, or none for current time
@@ -204,13 +197,10 @@ tz() {
     [[ $1 != "" ]] && time=$1 || time=$hournow
     local offset=$(($time - $hournow))
     [[ $offset < 0 ]] && offset=$(( offset + 24 ))
-    echo "Josh    " $( TZ=America/Los_Angeles date -v "+"$offset"H" "+%H")
-    echo "Eduardo " $( TZ=America/New_York    date -v "+"$offset"H" "+%H")
-    echo "GMT     " $( TZ=GMT                 date -v "+"$offset"H" "+%H")
-    echo "UK      " $( TZ=Europe/London       date -v "+"$offset"H" "+%H")
-    echo "CET     " $( TZ=Europe/Prague       date -v "+"$offset"H" "+%H")
-    echo "Sergey  " $( TZ=Europe/Moscow       date -v "+"$offset"H" "+%H")
-    echo "Vietnam " $( TZ=Asia/Saigon         date -v "+"$offset"H" "+%H")
+    echo "GMT     " $( TZ=GMT                 date -v "+"$offset"H" "+%H:%M")
+    echo "UK      " $( TZ=Europe/London       date -v "+"$offset"H" "+%H:%M")
+    echo "CET     " $( TZ=Europe/Prague       date -v "+"$offset"H" "+%H:%M")
+    echo "Vietnam " $( TZ=Asia/Saigon         date -v "+"$offset"H" "+%H:%M")
 }
 
 
@@ -223,3 +213,6 @@ listening() {
         echo "Usage: listening [pattern]"
     fi
 }
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob=!.git/*'
