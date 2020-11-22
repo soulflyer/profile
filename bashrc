@@ -17,14 +17,12 @@ fi
 source ~/Code/profile/tmux-commands.sh
 source ~/Code/profile/h.sh
 
-
 alias ec="emacsclient -a '' -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 
 alias ll="ls -la"
 alias la="ls -a"
 alias jps="jps -l"
-
 
 alias sf="ssh jphuquoc@soulflyer.co.uk"
 alias mi="ssh mimi"
@@ -56,6 +54,8 @@ t(){
     tree $TROPTS
 }
 
+# This is a simple hack to add colour to man page display. An alternative would be to install "most"
+# http://www.jedsoft.org/most/
 man() {
     env \
         LESS_TERMCAP_mb=$(printf "\e[1;31m") \
@@ -80,15 +80,6 @@ pushdir() {
 alias pu=pushdir
 alias po=popd
 
-alias tb="tm ~/Code/backup"
-alias tp="tm ~/Code/profile"
-alias te="tm ~/Code/emacs-iain"
-alias th="tm ~/Code/Clojure/Descjop/hinh-anh"
-alias ta="tm ~/Code/Clojure/Luminus/photo-api"
-alias ti="tm ~/Code/Clojure/image-lib"
-alias tt="tm ~/Code/tm"
-alias td="tm ~/Code/Flexiana/Data-42"
-
 EDITOR="emacsclient -nw"
 export EDITOR
 
@@ -100,8 +91,8 @@ export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
 
 # This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
 [ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
-
 __git_complete gp _git_checkout
+
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 Color_Off="\[\033[0m\]"
 Red="\[\033[0;31m\]"
@@ -153,19 +144,8 @@ stty -ixon
 HISTTIMEFORMAT="%F %H:%m "
 
 tz() {
-    # Can take a single parameter representing the hour, or none for current time
-    hournow=`date "+%H"`
-    # get rid of the leading 0 so it isn't interpreted as octal
-    hournow=${hournow#0}
-    [[ $1 != "" ]] && time=$1 || time=$hournow
-    local offset=$(($time - $hournow))
-    [[ $offset < 0 ]] && offset=$(( offset + 24 ))
-    echo "GMT     " $( TZ=GMT                 date -v "+"$offset"H" "+%H:%M")
-    echo "UK      " $( TZ=Europe/London       date -v "+"$offset"H" "+%H:%M")
-    echo "CET     " $( TZ=Europe/Prague       date -v "+"$offset"H" "+%H:%M")
-    echo "Vietnam " $( TZ=Asia/Saigon         date -v "+"$offset"H" "+%H:%M")
+    ~/bin/timezones.sh $@ | h [0-9:]
 }
-
 
 listening() {
     if [ $# -eq 0 ]; then
@@ -177,5 +157,7 @@ listening() {
     fi
 }
 
+# Setup fzf for fuzzy searching.
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob=!.git/*'
+# If rg is available use that:
+command -v rg >/dev/null 2>&1 || export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob=!.git/*'
