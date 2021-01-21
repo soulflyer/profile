@@ -4,7 +4,7 @@
 # Remap § to ` for English keyboard
 # hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000035,"HIDKeyboardModifierMappingDst":0x700000064}]}'
 
-fortune | cowsay | lolcat
+# fortune | cowsay | lolcat
 
 source ~/Code/profile/kubernetes.sh
 source ~/Code/profile/secrets.sh

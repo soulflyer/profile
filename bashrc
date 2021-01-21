@@ -126,6 +126,11 @@ else \
   echo "'$Blue$PathFull$Color_Off': "; \
 fi)'
 
+# direnv
+# ======
+# Looks for a .env file in each directory and applies any environment variables it finds there
+eval "$(direnv hook bash)"
+
 # History stuff
 # =============
 # Not sure this is necessary:
