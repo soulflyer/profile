@@ -13,8 +13,8 @@
  ;; :dev {:dependencies [[cider/piggieback "0.4.2"]]
  ;;       :repl-options {:nrepl-middleware [cider.piggieback/wrap-cljs-repl]}}
 
- :repl {:plugins [[cider/cider-nrepl "0.25.2"]
+ :repl {:plugins [[cider/cider-nrepl "0.26.0"]
                   [refactor-nrepl "2.5.0"]]}
 
- :bengal {:plugins [[cider/cider-nrepl "0.25.5"]
+ :bengal {:plugins [[cider/cider-nrepl "0.26.0"]
                     [refactor-nrepl "2.5.1" :exclusions [nrepl]]]}}

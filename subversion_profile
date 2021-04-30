@@ -2,4 +2,4 @@
 # This is where to add any subversion specific PATH entries
 # echo $PATH
 # echo "Hello from .subversion_profile"
-# PATH=$PATH
+PATH="$PATH:/usr/local/sbin"

@@ -19,6 +19,12 @@ source ~/Code/profile/h.sh
 
 alias ec="emacsclient -a '' -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
+alias ecb="emacsclient -e '(ibuffer)' -tty"
+alias ecd="ec ."
+alias ecc="emacsclient -e '(calendar)' -tty"
+alias ecn="emacsclient -e '(deft)' -tty"
+alias eco="emacsclient -e '(org-agenda-list)' -tty"
+
 
 alias ll="ls -la"
 alias la="ls -a"
