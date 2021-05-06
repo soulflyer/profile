@@ -25,7 +25,7 @@ alias tc="tm ~/Code/Clojure/scratch"
 alias tj="tm ~/Code/Javascript/scratchjs"
 alias tt="tm ~/Code/tm"
 
-alias tr="tm ~/Code/Flexiana/reify"
+
 # alias trss="tm ~/Code/Flexiana/reify/study-sheet"
 # alias tres="tm ~/Code/Flexiana/reify/esource-service"
 alias trb="tm ~/Code/Flexiana/reify/bengal"
