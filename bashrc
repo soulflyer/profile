@@ -17,7 +17,8 @@ fi
 source ~/Code/profile/tmux-commands.sh
 source ~/Code/profile/h.sh
 
-alias ec="emacsclient -a '' -tty"
+alias emd="emacsdaemon 2>&1 | lolcat -s 1.5 -S 35"
+alias ec="emacsclient -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 alias ecb="emacsclient -e '(ibuffer)' -tty"
 alias ecd="ec ."
@@ -39,6 +40,8 @@ alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 # alias oi="offlineimap"
 # alias oid="offlineimap -d maildir"
 # alias oii="offlineimap -f ~/Mail/INBOX"
+
+alias md="mdls -name kMDItemFinderComment"
 
 alias gs="git status"
 alias ga="git add ."

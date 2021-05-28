@@ -1,0 +1,21 @@
+#!/bin/bash
+filepth="$1"
+
+# Leaving this here. Turns out the reason was it isn't used on /tmp where I was testing it...
+# For some reason, mdls doesn't find the comment. Shame, it would be a lot nicer than the
+# hideous hack that follows
+# comment=$(xattr -p "com.apple.metadata:kMDItemFinderComment" $1 | xxd -r -p)
+# trimmed=${comment:9}
+
+comment=$(mdls -r -nullMarker "" -n kMDItemFinderComment "$filepth")
+
+
+echo $comment
+
+if [ "$#" -eq 2 ]
+then
+    updated="$2"
+    /usr/bin/osascript -e "set filepath to POSIX file \"$filepth\"" \
+     -e "set the_File to filepath as alias" \
+     -e "tell application \"Finder\" to set the comment of the_File to \"$updated\""
+fi
