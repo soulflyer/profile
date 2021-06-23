@@ -150,7 +150,8 @@ export HISTSIZE=1000000
 export HISTFILESIZE=1000000
 
 # this would be useful, but odd things seem to happen occasionaly (repeated commands)
-# export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
+# try -c -r instead f -n
+export PROMPT_COMMAND="history -a; history -c; history -r;${PROMPT_COMMAND}"
 
 # This disables the suspend command so that ctrl-s will search command history
 stty -ixon

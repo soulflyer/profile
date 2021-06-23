@@ -25,6 +25,8 @@ alias tc="tm ~/Code/Clojure/scratch"
 alias tj="tm ~/Code/Javascript/scratchjs"
 alias tt="tm ~/Code/tm"
 alias tzu="tmux new-window -d -n "Zulip" ~/bin/zulip"
+alias tf="tm ~/Code/Flexiana/open-source/frankie"
+alias tx="tm ~/Code/Flexiana/open-source/framework"
 
 # alias trss="tm ~/Code/Flexiana/reify/study-sheet"
 # alias tres="tm ~/Code/Flexiana/reify/esource-service"
