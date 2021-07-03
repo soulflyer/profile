@@ -4,6 +4,8 @@
 # Here I intend to just use the stable release for now, but would still like the emd alias in bashrc to work.
 alias emacsdaemon="emacs --daemon"
 
+source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
+
 # Completion stuff
 # ================
 # https://stackoverflow.com/a/58308956/1671119
