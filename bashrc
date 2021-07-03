@@ -95,12 +95,12 @@ export EDITOR
 # Completion stuff
 # ================
 # https://stackoverflow.com/a/58308956/1671119
-export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
-[[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
+# export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
+# [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
 
-# This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
-[ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
-__git_complete gp _git_checkout
+# # This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
+# [ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
+# __git_complete gp _git_checkout
 
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 Color_Off="\[\033[0m\]"

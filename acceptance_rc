@@ -3,3 +3,13 @@
 # Nice and simple. On subversion emacsdaemon checks for emacs version and links in the correct melpa dir.
 # Here I intend to just use the stable release for now, but would still like the emd alias in bashrc to work.
 alias emacsdaemon="emacs --daemon"
+
+# Completion stuff
+# ================
+# https://stackoverflow.com/a/58308956/1671119
+export BASH_COMPLETION_COMPAT_DIR="/opt/homebrew/etc/bash_completion.d"
+[[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
+
+# This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
+[ -f /opt/homebrew/etc/bash_completion.d/git-completion.bash ] && . /opt/homebrew/etc/bash_completion.d/git-completion.bash
+__git_complete gp _git_checkout
