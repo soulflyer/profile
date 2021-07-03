@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Nice and simple. On subversion emacsdaemon checks for emacs version and links in the correct melpa dir.
+# Here I intend to just use the stable release for now, but would still like the emd alias in bashrc to work.
+alias emacsdaemon="emacs --daemon"
