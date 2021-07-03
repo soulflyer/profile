@@ -1,6 +1,6 @@
 #!/bin/bash
 
-INSTALL_DIR=~/Code/profile/
+INSTALL_DIR=~/Code/profile
 HOST=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`
 
 ln -s $INSTALL_DIR/profile      ~/.profile
