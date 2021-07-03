@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This is where to add any acceptance specific PATH entries
+# echo $PATH
+# echo "Hello from .acceptance_profile"
+PATH="$PATH:/opt/homebrew/bin"
