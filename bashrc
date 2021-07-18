@@ -26,7 +26,7 @@ alias ecc="emacsclient -e '(calendar)' -tty"
 alias ecn="emacsclient -e '(deft)' -tty"
 alias eco="emacsclient -e '(org-agenda-list)' -tty"
 
-
+alias ls="ls -G"
 alias ll="ls -la"
 alias la="ls -a"
 alias jps="jps -l"
@@ -149,9 +149,13 @@ shopt -s histappend
 export HISTSIZE=1000000
 export HISTFILESIZE=1000000
 
-# this would be useful, but odd things seem to happen occasionaly (repeated commands)
-# try -c -r instead f -n
-export PROMPT_COMMAND="history -a; history -c; history -r;${PROMPT_COMMAND}"
+# this is be useful, but odd things seem to happen occasionaly (repeated commands)
+# try -c -r instead of f -n
+# export PROMPT_COMMAND="history -a; history -c; history -r;${PROMPT_COMMAND}"
+
+# just add new commands to history, don't clear and re-read. That way the local history stays local so each window will
+# appear to have its own until history -r is run or a new shell is started.
+export PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
 
 # This disables the suspend command so that ctrl-s will search command history
 stty -ixon
