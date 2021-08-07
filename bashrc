@@ -43,6 +43,8 @@ alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 
 alias md="mdls -name kMDItemFinderComment"
 
+alias colours="echo -e '\033[30m██\033[31m██\033[32m██\033[33m██\033[34m██\033[35m██\033[36m██\033[37m██\n\033[90m██\033[91m██\033[92m██\033[93m██\033[94m██\033[95m██\033[96m██\033[97m██'"
+
 alias gs="git status"
 alias ga="git add ."
 alias gc="git commit -m"
