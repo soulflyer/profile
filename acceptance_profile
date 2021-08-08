@@ -3,3 +3,4 @@
 # echo $PATH
 # echo "Hello from .acceptance_profile"
 PATH="$PATH:/opt/homebrew/bin"
+export BASH_SILENCE_DEPRECATION_WARNING=1
