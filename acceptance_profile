@@ -2,5 +2,5 @@
 # This is where to add any acceptance specific PATH entries
 # echo $PATH
 # echo "Hello from .acceptance_profile"
-PATH="$PATH:/opt/homebrew/bin"
+PATH="/opt/homebrew/bin:$PATH"
 export BASH_SILENCE_DEPRECATION_WARNING=1
