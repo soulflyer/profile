@@ -1,1 +1,11 @@
+.DS_Store
+junk/*
+.#*
+checkouts/
+.rebel_readline_history
+.tmux
+.tern-port
+.log/
+.dir-locals.el
+.projectile
 [#]*[#]
