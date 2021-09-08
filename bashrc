@@ -17,7 +17,7 @@ fi
 source ~/Code/profile/tmux-commands.sh
 source ~/Code/profile/h.sh
 
-alias emd="emacsdaemon 2>&1 | lolcat -s 1.5 -S 35"
+alias emd="emacs --daemon 2>&1 | lolcat -s 1.5 -S 35"
 alias ec="emacsclient -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"
 alias ecb="emacsclient -e '(ibuffer)' -tty"
@@ -111,6 +111,8 @@ Green="\[\033[0;32m\]"
 Yellow="\[\033[0;33m\]"
 Purple="\[\033[0;35m\]"
 Blue="\[\033[0;94m\]"
+# Note that Blue ^ is redefined to be bright blue as its unreadable on black
+# Change the 9 to a 3 to put it back
 
 PathShort="\w"
 PathFull="\W"

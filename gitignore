@@ -8,4 +8,5 @@ checkouts/
 .log/
 .dir-locals.el
 .projectile
+.lsp
 [#]*[#]
