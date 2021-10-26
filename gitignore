@@ -9,4 +9,6 @@ checkouts/
 .dir-locals.el
 .projectile
 .lsp
+.shadow-cljs
+node_modules
 [#]*[#]

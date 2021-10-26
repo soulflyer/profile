@@ -20,3 +20,6 @@ export BASH_COMPLETION_COMPAT_DIR="/opt/homebrew/etc/bash_completion.d"
 # This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
 [ -f /opt/homebrew/etc/bash_completion.d/git-completion.bash ] && . /opt/homebrew/etc/bash_completion.d/git-completion.bash
 __git_complete gp _git_checkout
+
+# Added to .bashrc by rustup, moved here by me
+. "$HOME/.cargo/env"
