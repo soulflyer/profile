@@ -165,8 +165,9 @@ export HISTFILESIZE=1000000
 # try -c -r instead of f -n
 # export PROMPT_COMMAND="history -a; history -c; history -r;${PROMPT_COMMAND}"
 
-# just add new commands to history, don't clear and re-read. That way the local history stays local so each window will
-# appear to have its own until history -r is run or a new shell is started.
+# just add new commands to history, don't clear and re-read. That way the local
+# history stays local so each window will appear to have its own until history -r
+# is run or a new shell is started.
 export PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
 
 # This disables the suspend command so that ctrl-s will search command history
@@ -192,3 +193,6 @@ listening() {
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 # If rg is available use that:
 command -v rg >/dev/null 2>&1 || export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden --glob=!.git/*'
+
+export _ZO_ECHO='1'
+eval "$(zoxide init --cmd c bash)"
