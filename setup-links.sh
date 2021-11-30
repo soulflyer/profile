@@ -13,3 +13,8 @@ ln -s $INSTALL_DIR/${HOST}_profile ~/.${HOST}_profile
 ln -s $INSTALL_DIR/gitignore       ~/.gitignore
 
 ln -s $INSTALL_DIR/work.sh         ~/bin/work
+
+ln -s $INSTALL_DIR/yabai/.yabairc  ~/.yabairc
+ln -s $INSTALL_DIR/yabai/.skhdrc   ~/.skhdrc
+ln -s $INSTALL_DIR/yabai/yabai-decrease-x.sh ~/bin/yabai-decrease-x.sh
+ln -s $INSTALL_DIR/yabai/yabai-increase-x.sh ~/bin/yabai-increase-x.sh
