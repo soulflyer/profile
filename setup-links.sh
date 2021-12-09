@@ -18,3 +18,5 @@ ln -s $INSTALL_DIR/yabai/.yabairc  ~/.yabairc
 ln -s $INSTALL_DIR/yabai/.skhdrc   ~/.skhdrc
 ln -s $INSTALL_DIR/yabai/yabai-decrease-x.sh ~/bin/yabai-decrease-x.sh
 ln -s $INSTALL_DIR/yabai/yabai-increase-x.sh ~/bin/yabai-increase-x.sh
+ln -s $INSTALL_DIR/yabai/yabai-decrease-y.sh ~/bin/yabai-decrease-y.sh
+ln -s $INSTALL_DIR/yabai/yabai-increase-y.sh ~/bin/yabai-increase-y.sh

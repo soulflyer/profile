@@ -169,6 +169,7 @@ export HISTFILESIZE=1000000
 # history stays local so each window will appear to have its own until history -r
 # is run or a new shell is started.
 export PROMPT_COMMAND="history -a;${PROMPT_COMMAND}"
+alias hr="history -r"
 
 # This disables the suspend command so that ctrl-s will search command history
 stty -ixon
