@@ -12,6 +12,7 @@ shift + alt + cmd - left  : yabai -m window --warp west
 shift + alt + cmd - right : yabai -m window --warp east
 cmd - z                   : yabai -m window --toggle zoom-fullscreen
 alt + cmd - r             : yabai -m space --mirror y-axis
+shift + alt +cmd - r      : yabai -m window --toggle split
 ctrl + alt + cmd - right  : ~/bin/yabai-increase-x.sh
 ctrl + alt + cmd - left   : ~/bin/yabai-decrease-x.sh
 ctrl + alt + cmd - up     : ~/bin/yabai-decrease-y.sh
@@ -25,10 +26,14 @@ shift + alt + cmd - 4     : yabai -m window --space 4
 shift + alt + cmd - 5     : yabai -m window --space 5
 shift + alt + cmd - 6     : yabai -m window --space 6
 alt + cmd - o             : yabai -m window --toggle float; yabai -m window --grid 8:8:1:1:5:5
-alt + cmd - h: yabai -m window --move rel:-20:0
-alt + cmd - j: yabai -m window --move rel:0:-20
-alt + cmd - k: yabai -m window --move rel:0:20
-alt + cmd - l: yabai -m window --move rel:20:0
+alt + cmd - h             : yabai -m window --move rel:-20:0
+alt + cmd - j             : yabai -m window --move rel:0:-20
+alt + cmd - k             : yabai -m window --move rel:0:20
+alt + cmd - l             : yabai -m window --move rel:20:0
+shift + alt + cmd - h     : yabai -m window --resize left:-10:0 ; yabai -m window --resize right:20:0
+shift + alt + cmd - j     : yabai -m window --resize top:0:-10  ; yabai -m window --resize bottom:0:20
+shift + alt + cmd - k     : yabai -m window --resize top:0:10   ; yabai -m window --resize bottom:0:-20
+shift + alt + cmd - l     : yabai -m window --resize left:10:0  ; yabai -m window --resize right:-20:0
 
 
 # ################################################################ #
