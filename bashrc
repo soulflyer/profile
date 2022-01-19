@@ -102,8 +102,8 @@ alias po=popd
 EDITOR="emacsclient -nw"
 export EDITOR
 
-# Completion stuff
-# ================
+# Completion stuff (moved to machine specific profile files)
+# ==========================================================
 # https://stackoverflow.com/a/58308956/1671119
 # export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d"
 # [[ -r "/usr/local/etc/profile.d/bash_completion.sh" ]] && . "/usr/local/etc/profile.d/bash_completion.sh"
@@ -112,6 +112,8 @@ export EDITOR
 # [ -f /usr/local/etc/bash_completion.d/git-completion.bash ] && . /usr/local/etc/bash_completion.d/git-completion.bash
 # __git_complete gp _git_checkout
 
+# Set the prompt
+# ==============
 #  Lifted fron http://mediadoneright.com/content/ultimate-git-ps1-bash-prompt
 Color_Off="\[\033[0m\]"
 Red="\[\033[0;31m\]"
