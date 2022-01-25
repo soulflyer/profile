@@ -16,6 +16,7 @@ fi
 
 source ~/Code/profile/tmux-commands.sh
 source ~/Code/profile/h.sh
+[ -f "/Users/iain/.ghcup/env" ] && source "/Users/iain/.ghcup/env" # ghcup-env
 
 alias emd="emacs --daemon 2>&1 | lolcat -s 1.5 -S 35"
 alias ec="emacsclient -tty"
@@ -197,3 +198,4 @@ command -v rg >/dev/null 2>&1 || export FZF_DEFAULT_COMMAND='rg --files --no-ign
 
 export _ZO_ECHO='1'
 eval "$(zoxide init --cmd c bash)"
+

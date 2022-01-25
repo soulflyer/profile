@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # This is where to add any acceptance specific PATH entries
 # echo $PATH
-PATH="/opt/homebrew/opt/texinfo/bin/:/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:$PATH"
+PATH="/opt/homebrew/opt/llvm/bin:/opt/homebrew/opt/texinfo/bin/:/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:$PATH"
 export BASH_SILENCE_DEPRECATION_WARNING=1
 # Added to .profile by rustup, moved here by me
 . "$HOME/.cargo/env"
