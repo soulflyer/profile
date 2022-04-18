@@ -8,7 +8,7 @@ case $- in
     *) return;;
 esac
 
-hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`_rc
+hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site// | sed s/\.lan//`_rc
 if [ -f ~/"$hostspecific" ]
 then
     . ~/"$hostspecific"

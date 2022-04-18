@@ -12,3 +12,4 @@ checkouts/
 .shadow-cljs
 node_modules
 [#]*[#]
+.env
