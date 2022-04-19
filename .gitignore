@@ -1,3 +1,5 @@
 secrets.sh
 nohup.out
 .clj-kondo
+.cpcache
+.nrepl-port

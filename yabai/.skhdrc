@@ -58,10 +58,11 @@ shift + ctrl + cmd - 7 : yabai -m space --focus 7
 shift + ctrl + cmd - 8 : yabai -m space --focus 8
 shift + ctrl + cmd - 9 : yabai -m space --focus 9
 
-
 ctrl + cmd - 0 : yabai -m space --focus next || yabai -m space --focus first
-ctrl + cmd - a : yabai -m space --focus prev
-ctrl + cmd - s : yabai -m space --focus next
+ctrl + cmd - s : /Users/iain/bin/cycle-spaces
+ctrl + cmd - a : /Users/iain/bin/cycle-displays
+# ctrl + cmd - a : yabai -m space --focus prev
+# ctrl + cmd - s : yabai -m space --focus next
 # ctrl + cmd - f : yabai -m config window_topmost on
 # ctrl + cmd - g : yabai -m config window_topmost off
 # ctrl + cmd - x : /Users/iain/bin/desktop /Users/iain/Pictures/59470036.jpg 2>&1 > /tmp/error.log
@@ -72,8 +73,8 @@ ctrl + cmd - b : yabai -m config window_topmost off ; /Applications/Vivaldi.app/
 # ctrl + cmd - b     : yabai -m window --toggle border
 
 # Display stuff
-ctrl + shift + alt + cmd - right : yabai -m display --focus 2
-ctrl + shift + alt + cmd - left  : yabai -m display --focus 1
+# ctrl + shift + alt + cmd - right : yabai -m display --focus 2
+# ctrl + shift + alt + cmd - left  : yabai -m display --focus 1
 
 ctrl + alt + cmd - left   : yabai -m space --display 1
 ctrl + alt + cmd - right  : yabai -m space --display 2
