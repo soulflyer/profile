@@ -71,6 +71,11 @@ ctrl + alt + cmd - right  : yabai -m space --display 2
 alt  + cmd - o             : yabai -m window --toggle float; yabai -m window --grid 8:8:1:1:5:5
 ctrl + cmd - o             : yabai -m window --toggle float; 
 ctrl + cmd - m             : yabai -m window --grid 8:8:1:1:5:5
+# FIXME This should probably not toggle topmost given that it is likely to be already set.
+# It's not obvious how to tell if a window is already pip-ed though, so set topmost by hand.
+ctrl + cmd - p             : yabai -m window --toggle sticky;\
+                             # yabai -m window --toggle topmost;\
+                             yabai -m window --toggle pip
 
 # TODO turn these into a toggle
 ctrl + cmd - w             : yabai -m space --layout float
