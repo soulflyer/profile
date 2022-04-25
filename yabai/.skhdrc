@@ -21,14 +21,7 @@ ctrl + cmd - z             : yabai -m window --toggle zoom-fullscreen
 ctrl + cmd - r             : yabai -m space --mirror y-axis
 shift + ctrl + cmd - r     : yabai -m window --toggle split
 
-# resize non-floating windows
-# For now, just use the floating window resize bindings.
-# ctrl + alt + cmd - right : ~/bin/yabai-increase-x.sh
-# ctrl + alt + cmd - left  : ~/bin/yabai-decrease-x.sh
-# ctrl + alt + cmd - up    : ~/bin/yabai-decrease-y.sh
-# ctrl + alt + cmd - down  : ~/bin/yabai-increase-y.sh
-
-# Move a window to a space
+# Move a window to a new space
 ctrl + cmd - n     : yabai -m space --create && \
                             index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" == false))[-1].index')" && \
                             yabai -m window --space "${index}" && \
@@ -63,18 +56,13 @@ ctrl + cmd - s : /Users/iain/bin/cycle-spaces
 ctrl + cmd - a : /Users/iain/bin/cycle-displays
 # ctrl + cmd - a : yabai -m space --focus prev
 # ctrl + cmd - s : yabai -m space --focus next
-# ctrl + cmd - f : yabai -m config window_topmost on
-# ctrl + cmd - g : yabai -m config window_topmost off
+ctrl + cmd - f : yabai -m config window_topmost on
+ctrl + cmd - g : yabai -m config window_topmost off
 # ctrl + cmd - x : /Users/iain/bin/desktop /Users/iain/Pictures/59470036.jpg 2>&1 > /tmp/error.log
 ctrl + cmd - x : /Users/iain/bin/desktop /System/Library/Desktop\ Pictures/Solid\ Colors/Black.png
-ctrl + cmd - t : yabai -m config window_topmost on  ; /Applications/Vivaldi.app/Contents/MacOS/Vivaldi
-ctrl + cmd - b : yabai -m config window_topmost off ; /Applications/Vivaldi.app/Contents/MacOS/Vivaldi
-# Don't use this yet, it causes apps to crash
-# ctrl + cmd - b     : yabai -m window --toggle border
-
-# Display stuff
-# ctrl + shift + alt + cmd - right : yabai -m display --focus 2
-# ctrl + shift + alt + cmd - left  : yabai -m display --focus 1
+# ctrl + cmd - b : /Users/iain/bin/open-browser-window
+ctrl + cmd - b : yabai -m config window_topmost on ; /Users/iain/bin/open-browser-window ; yabai -m config window_topmost off
+ctrl + cmd - t  :yabai -m window --toggle topmost
 
 ctrl + alt + cmd - left   : yabai -m space --display 1
 ctrl + alt + cmd - right  : yabai -m space --display 2
@@ -83,8 +71,10 @@ ctrl + alt + cmd - right  : yabai -m space --display 2
 alt  + cmd - o             : yabai -m window --toggle float; yabai -m window --grid 8:8:1:1:5:5
 ctrl + cmd - o             : yabai -m window --toggle float; 
 ctrl + cmd - m             : yabai -m window --grid 8:8:1:1:5:5
-ctrl + cmd - f             : yabai -m space --layout float
-ctrl + cmd - g             : yabai -m space --layout bsp
+
+# TODO turn these into a toggle
+ctrl + cmd - w             : yabai -m space --layout float
+ctrl + cmd - e             : yabai -m space --layout bsp
 
 # move a floating window
 shift + ctrl + cmd - h     : yabai -m window --move rel:-20:0
@@ -98,7 +88,19 @@ ctrl + cmd - j             : yabai -m window --resize top:0:-10  ; yabai -m wind
 ctrl + cmd - k             : yabai -m window --resize top:0:10   ; yabai -m window --resize bottom:0:-20
 ctrl + cmd - l             : yabai -m window --resize left:10:0  ; yabai -m window --resize right:-20:0
 
+# resize non-floating windows
+# For now, just use the floating window resize bindings.
+# ctrl + alt + cmd - right : ~/bin/yabai-increase-x.sh
+# ctrl + alt + cmd - left  : ~/bin/yabai-decrease-x.sh
+# ctrl + alt + cmd - up    : ~/bin/yabai-decrease-y.sh
+# ctrl + alt + cmd - down  : ~/bin/yabai-increase-y.sh
 
+# Don't use this yet, it causes apps to crash
+# ctrl + cmd - b     : yabai -m window --toggle border
+
+# Display stuff
+# ctrl + shift + alt + cmd - right : yabai -m display --focus 2
+# ctrl + shift + alt + cmd - left  : yabai -m display --focus 1
 
 # ################################################################ #
 # THE FOLLOWING IS AN EXPLANATION OF THE GRAMMAR THAT SKHD PARSES. #
