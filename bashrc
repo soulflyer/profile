@@ -18,6 +18,8 @@ source ~/Code/profile/tmux-commands.sh
 source ~/Code/profile/h.sh
 [ -f "/Users/iain/.ghcup/env" ] && source "/Users/iain/.ghcup/env" # ghcup-env
 
+alias books="ec ~/Documents/books/bookshelf"
+
 alias emd="emacs --daemon 2>&1 | lolcat -s 1.5 -S 35"
 alias ec="emacsclient -tty"
 alias EC="SUDO_EDITOR=\"emacsclient -nw\" sudo -e"

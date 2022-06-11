@@ -15,7 +15,7 @@ shift + ctrl + cmd - left  : yabai -m window --warp west
 shift + ctrl + cmd - right : yabai -m window --warp east
 
 # cmd - z                    : yabai -m window --toggle zoom-fullscreen
-ctrl + cmd - z             : yabai -m window --toggle zoom-fullscreen
+# ctrl + cmd - z             : yabai -m window --toggle zoom-fullscreen
 
 # Flip the panes within a window
 ctrl + cmd - r             : yabai -m space --mirror y-axis
@@ -64,13 +64,15 @@ ctrl + cmd - x : /Users/iain/bin/desktop /System/Library/Desktop\ Pictures/Solid
 ctrl + cmd - b : yabai -m config window_topmost on ; /Users/iain/bin/open-browser-window ; yabai -m config window_topmost off
 ctrl + cmd - t  :yabai -m window --toggle topmost
 
-ctrl + alt + cmd - left   : yabai -m space --display 1
-ctrl + alt + cmd - right  : yabai -m space --display 2
+ctrl + alt + cmd - left   : yabai -m space --display 2
+ctrl + alt + cmd - right  : yabai -m space --display 1
 
 # float a window
 alt  + cmd - o             : yabai -m window --toggle float; yabai -m window --grid 8:8:1:1:5:5
 ctrl + cmd - o             : yabai -m window --toggle float; 
 ctrl + cmd - m             : yabai -m window --grid 8:8:1:1:5:5
+ctrl + cmd - z             : yabai -m window --grid 8:8:0:0:8:8
+
 # FIXME This should probably not toggle topmost given that it is likely to be already set.
 # It's not obvious how to tell if a window is already pip-ed though, so set topmost by hand.
 ctrl + cmd - p             : yabai -m window --toggle sticky;\
