@@ -12,10 +12,10 @@ if [[ "$1" == "" ]]; then
 fi;
 
 # If argument doesn't end with '.app', append it
-if [[ "$1" =~ \.app$ ]]; then
-    app_name="$1"
+if [[ "$*" =~ \.app$ ]]; then
+    app_name="$*"
 else
-    app_name="$1.app";
+    app_name="$*.app";
 fi;
 
 # Look for the path of the application bundle
@@ -29,6 +29,6 @@ if [[ -r "$app_path_and_name/Contents/Info.plist" ]]; then
     echo "$app_path_and_name/Contents/MacOS/$(defaults read "$app_path_and_name/Contents/Info.plist" CFBundleExecutable)";
     exit 0;
 else
-    echo "Application '$1' not found";
+    echo "Application '$*' not found";
     exit 1
 fi
