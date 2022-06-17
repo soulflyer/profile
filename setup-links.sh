@@ -1,5 +1,6 @@
 #!/bin/bash
 # This is not really tested, more of a record of links needed.
+# Probably easier to set it up using dired-do-symlink
 
 INSTALL_DIR=~/Code/profile
 HOST=`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site//`
