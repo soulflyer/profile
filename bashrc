@@ -15,7 +15,7 @@ then
 fi
 
 source ~/Code/profile/tmux-commands.sh
-source ~/Code/profile/h.sh
+source ~/Code/profile/bin/h.sh
 [ -f "/Users/iain/.ghcup/env" ] && source "/Users/iain/.ghcup/env" # ghcup-env
 
 alias books="ec ~/Documents/books/bookshelf"
@@ -202,4 +202,8 @@ command -v rg >/dev/null 2>&1 || export FZF_DEFAULT_COMMAND='rg --files --no-ign
 
 export _ZO_ECHO='1'
 eval "$(zoxide init --cmd c bash)"
+
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
