@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# This doesn't work on acceptance
 j8() {
     export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
     echo "$JAVA_HOME"

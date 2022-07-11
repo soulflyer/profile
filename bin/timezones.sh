@@ -5,9 +5,10 @@ then
     export TIMEZONES_FILE="$HOME/.timezones.csv"
 fi
 
+# If there is no .timezones.csv file, create one containing GMT and a helpful message.
 if [ ! -s $TIMEZONES_FILE ]
 then
-    echo 'GMT. Edit ~/.timezones.csv to add other zones,GMT' > $TIMEZONES_FILE
+    echo 'GMT. Edit '$TIMEZONES_FILE 'to add other zones,GMT' > $TIMEZONES_FILE
 fi
 
 hournow=`date "+%H"`

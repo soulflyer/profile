@@ -15,7 +15,7 @@ then
 fi
 
 source ~/Code/profile/tmux-commands.sh
-source ~/Code/profile/h.sh
+source ~/Code/profile/bin/h.sh
 [ -f "/Users/iain/.ghcup/env" ] && source "/Users/iain/.ghcup/env" # ghcup-env
 
 alias books="ec ~/Documents/books/bookshelf"
