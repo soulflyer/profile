@@ -179,7 +179,7 @@ alias hr="history -r"
 # This disables the suspend command so that ctrl-s will search command history
 stty -ixon
 
-HISTTIMEFORMAT="%F %H:%m "
+HISTTIMEFORMAT="%F %T"
 
 tz() {
     ~/bin/timezones.sh $@ | h [0-9:]

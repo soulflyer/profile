@@ -13,6 +13,7 @@ ln -s $INSTALL_DIR/${HOST}_rc      ~/.${HOST}_rc
 ln -s $INSTALL_DIR/${HOST}_profile ~/.${HOST}_profile
 
 ln -s $INSTALL_DIR/gitignore       ~/.gitignore
+ln -s $INSTALL_DIR/cljstyle        ~/.cljstyle
 
 ln -s $INSTALL_DIR/work.sh         ~/bin/work
 ln -s $INSTALL_DIR/changefont.sh   ~/bin/changefont
