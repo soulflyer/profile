@@ -8,9 +8,13 @@ case $- in
     *) return;;
 esac
 
-hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.site// | sed s/\.lan//`_rc
+#TODO change this so it takes a wildcard and removes ANY guff after the name.
+hostspecific=.`hostname | tr '[:upper:]' '[:lower:]' | sed s/\.local// | sed s/\.broadband// | sed s/\.site// | sed s/\.lan//`_rc
+# echo "Hostspecific is: $hostspecific"
+
 if [ -f ~/"$hostspecific" ]
 then
+    # echo "Running host specific setup file $hostspecific"
     . ~/"$hostspecific"
 fi
 
