@@ -15,7 +15,7 @@ pto(){
     tmux set pane-border-status off
 }
 
-alias ta="tm ~/Code/Clojure/Luminus/photo-api"
+alias ta="tm ~/Code/Clojure/photo-api"
 alias tb="tm ~/Code/backup"
 alias tc="tm ~/Code/Clojure/scratch"
 alias te="tm ~/Code/emacs-iain"
