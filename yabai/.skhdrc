@@ -1,3 +1,6 @@
+# Toggle the menu bar
+f2 : osascript /Users/iain/bin/toggle-menu-bar.scpt
+
 # Move focus within a window
 cmd - right               : yabai -m window --focus east
 cmd - left                : yabai -m window --focus west
