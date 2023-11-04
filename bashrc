@@ -210,5 +210,5 @@ eval "$(zoxide init --cmd c bash)"
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
-
-. "$HOME/.cargo/env"
+export PATH="/Users/iain/.gravie/bin:$PATH"
+export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
