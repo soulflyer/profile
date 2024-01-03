@@ -5,6 +5,7 @@
 alias emacsdaemon="emacs --daemon"
 
 source /opt/homebrew/etc/bash_completion.d/git-prompt.sh
+source /opt/homebrew/etc/bash_completion.d/mpc
 
 # Change the blue to boldblue so it is legible. Note the leading E
 # man ls for details

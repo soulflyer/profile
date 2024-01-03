@@ -3,3 +3,6 @@ nohup.out
 .clj-kondo
 .cpcache
 .nrepl-port
+mpd.log
+mpd.pid
+mpdstate

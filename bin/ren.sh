@@ -3,7 +3,8 @@
 DIR=$1
 
 rename 's/ /-/g' $DIR/*
-rename s/[\(\)\'\,]//g $DIR/*
+rename 's/‐/-/g' $DIR/*
+rename s/[\(\)\'\,\`\’\‘]//g $DIR/*
 rename s/[\{\}]//g $DIR/*
 rename s/_$// $DIR/*
 #rename 's/,//g'  $DIR/*
