@@ -1,0 +1,1135 @@
+#!/bin/bash
+#
+#
+# $Id: player.in,v 1.52 2023-06-30 20:28:38+05:30 Cprogrammer Exp mbhangui $
+#
+get_mpd_conf_value()
+{
+    grep "^$1" ~/.mpd/mpd.conf|awk '{print $2}' | \
+        sed -e 's{"{{g'
+}
+
+get_TTindex()
+{
+	uri="$1"
+	if [ -n "$MYSQL_SOCKET" ] ; then
+		echo "SELECT TTindex FROM Tracktable WHERE Uri='$uri';" \
+			| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+	else
+		echo "SELECT TTindex FROM Tracktable WHERE Uri='$uri';" \
+			| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+	fi
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: SELECT TTindex FROM Tracktable WHERE Uri='$uri';" 1>&2
+		cat $MPDEV_TMPDIR/mysql.err
+		return 1
+	fi
+	return 0
+}
+
+get_rompr_rating()
+{
+	if [ -n "$MYSQL_SOCKET" ] ; then
+		echo "SELECT Rating, UNIX_TIMESTAMP(zztimestamp) FROM Ratingtable WHERE TTindex=$1;" \
+			| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+	else
+		echo "SELECT Rating, UNIX_TIMESTAMP(zztimestamp) FROM Ratingtable WHERE TTindex=$1;" \
+			| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+	fi
+	if [ $? -ne 0 ] ; then
+		if [ -n "$MYSQL_SOCKET" ] ; then
+			(
+			echo -n "ALTER TABLE Ratingtable ADD COLUMN zztimestamp TIMESTAMP DEFAULT "
+			echo -n "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP not null;"
+			echo
+			) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+			echo "SELECT Rating, UNIX_TIMESTAMP(zztimestamp) FROM Ratingtable WHERE TTindex=$1;" \
+				| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+		else
+			(
+			echo -n "ALTER TABLE Ratingtable ADD COLUMN zztimestamp TIMESTAMP DEFAULT "
+			echo -n "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP not null;"
+			echo
+			) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+			echo "SELECT Rating, UNIX_TIMESTAMP(zztimestamp) FROM Ratingtable WHERE TTindex=$1;" \
+				| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+		fi
+		if [ $? -ne 0 ] ; then
+			echo "ERROR: SELECT Rating, UNIX_TIMESTAMP(zztimestamp) FROM Ratingtable WHERE TTindex=$1;" 1>&2
+			cat $MPDEV_TMPDIR/mysql.err
+			return 1
+		fi
+	fi
+	return 0
+}
+
+get_mpd_rating()
+{
+	turi=`echo $1|sed -e "s{'{''{g"`
+	sqlite3 -noheader -batch $sticker_file "SELECT value FROM sticker WHERE type='song' AND uri='$turi';"
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: SELECT value FROM sticker WHERE type='song' AND uri=\"$turi\";" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+get_stat_rating()
+{
+	turi=`echo $1|sed -e "s{'{''{g"`
+	sqlite3 -noheader -batch $stats_file "SELECT rating FROM song WHERE uri='$turi';"
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: SELECT rating FROM song WHERE uri='$turi';" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+get_stat_last_played()
+{
+	turi=`echo $1|sed -e "s{'{''{g"`
+	sqlite3 -noheader -batch $stats_file "SELECT last_played FROM song WHERE uri='$turi';"
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: SELECT last_played FROM song WHERE uri='$turi';" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+get_stat_playcount()
+{
+	turi=`echo "$1" | sed -e "s{'{''{g"`
+	sqlite3 -noheader -batch $stats_file "SELECT play_count from song WHERE uri='$turi';"
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: SELECT play_count from song WHERE uri='$turi';" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+sticker_db_insert()
+{
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi=`echo $1|sed -e "s{'{''{g"`
+	tmprate=$2
+	sqlite3 -batch $sticker_file "INSERT or IGNORE into sticker \
+		(type, uri, name, value) values ('song', '$turi', 'rating', $tmprate);"
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: INSERT or IGNORE into sticker (type, uri, name, value) into sticker values ('song', '$turi', 'rating', $tmprate);" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+sticker_db_update()
+{
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi=`echo $1|sed -e "s{'{''{g"`
+	tmprate=$2
+	sqlite3 -batch $sticker_file "UPDATE sticker SET value=$tmprate WHERE type='song' AND uri='$turi';"
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: UPDATE sticker SET value=$tmprate WHERE type='song' AND uri='$turi';" 1>&2
+		return 1
+	fi
+}
+
+stats_db_insert()
+{
+	# SONG_LAST_MODIFIED: last_modified
+	# SONG_ALBUM: album
+	# SONG_ARTIST: artist
+	# SONG_DATE: date
+	# SONG_GENRE: genre
+	# SONG_TITLE: title
+	# SONG_TRACK: track
+	# SONG_DURATION: duration
+
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi=`echo "$1" | sed -e "s{'{''{g"`
+	ARTIST=`echo "$SONG_ARTIST" | sed -e "s{'{''{g"`
+	ALBUM=`echo "$SONG_ALBUM" | sed -e "s{'{''{g"`
+	TITLE=`echo "$SONG_TITLE" | sed -e "s{'{''{g"`
+	tmprate=$2
+	sqlite3 -batch $stats_file "INSERT or IGNORE into \
+		song (uri, play_count, last_played, rating, duration,last_modified,artist,album,title,track,genre,date) \
+		values ('$turi',0,0,$tmprate,$SONG_DURATION,$SONG_LAST_MODIFIED,'$ARTIST','$ALBUM','$TITLE','$SONG_TRACK','$SONG_GENRE','$SONG_DATE');"
+	if [ $? -ne 0 ] ; then
+		(
+		echo -n "INSERT or IGNORE into song "
+		echo -n "(uri, play_count, last_played, rating, duration,"
+		echo -n "last_modified,artist,album,title,track,genre,date)"
+		echo -n "values ('$turi',0,0,$tmprate,$SONG_DURATION,"
+		echo -n "$SONG_LAST_MODIFIED,'$ARTIST','$ALBUM','$TITLE',"
+		echo -n "'$SONG_TRACK','$SONG_GENRE','$SONG_DATE');"
+		echo
+		) 1>&2
+		return 1
+	fi
+	return 0
+}
+
+stats_db_update()
+{
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi=`echo "$1" | sed -e "s{'{''{g"`
+	tmprate=$2
+	last_played=$3
+	update_playcount=$4
+	if [ $update_playcount -eq 1 ] ; then
+		if [ -n "$prev_last_played" ] ; then
+			days_back=$(expr \( $last_played - $prev_last_played \) / 86400)
+			if [ $days_back -lt 1 ] ; then
+				kval=4
+			elif [ $days_back -lt 7 ] ; then
+				kval=3
+			elif [ $days_back -lt 14 ] ; then
+				kval=2
+			elif [ $days_back -lt 28 ] ; then
+				kval=1
+			else
+				kval=0
+			fi
+		else
+			kval=0
+		fi
+		if [ $kval -gt 0 ] ; then
+			if [ $VERBOSE -gt 0 ] ; then
+				echo "UPDATE stats upgrade KARMA += $kval"
+			fi
+			sqlite3 -batch $stats_file \
+				"UPDATE song SET last_played=$last_played, play_count=play_count+1, rating=$tmprate, karma=karma+$kval WHERE uri='$turi';"
+		else
+			sqlite3 -batch $stats_file \
+				"UPDATE song SET last_played=$last_played, play_count=play_count+1, rating=$tmprate WHERE uri='$turi';"
+		fi
+	else
+		sqlite3 -batch $stats_file \
+			"UPDATE song SET last_played=$last_played, rating=$tmprate WHERE uri='$turi';"
+	fi
+	if [ $? -ne 0 ] ; then
+		if [ $update_playcount -eq 1 ] ; then
+			if [ $kval -gt 0 ] ; then
+				echo "ERROR: UPDATE song SET last_played=$last_played, play_count=play_count+1, rating=$tmprate, karma=karma+$kval WHERE uri='$turi';"
+			else
+				echo "ERROR: UPDATE song SET last_played=$last_played, play_count=play_count+1, rating=$tmprate WHERE uri='$turi';" 1>&2
+			fi
+		else
+			echo "ERROR: UPDATE song SET last_played=$last_played, rating=$tmprate WHERE uri='$turi';" 1>&2
+		fi
+		return 1
+	fi
+	return 0
+}
+
+downgrade_karma()
+{
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi=`echo "$1" | sed -e "s{'{''{g"`
+	sqlite3 -batch $stats_file \
+		"UPDATE song SET karma=karma-1 WHERE uri='$turi' AND karma>0 AND karma<60 AND rating<6 AND play_count<=5;"
+	if [ $? -ne 0 ] ; then
+		"ERROR: UPDATE song SET karma=karma-1 WHERE uri='$turi' AND karma>0 AND karma<60 AND rating<6 AND play_count<=5;" 1>&2
+		return 1
+	fi
+	return 0
+}
+
+rompr_update_playcount()
+{
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi="$1"
+	tm="$2"
+	pcount=$3
+	if [ $# -eq 4 ] ; then
+		TTidx=$4
+	else
+		TTidx=`get_TTindex "$turi"`
+	fi
+	if [ -n "$TTidx" ] ; then
+		if [ -n "$MYSQL_SOCKET" ] ; then
+			(
+			# update Playcount only when it is not being updated by RompR
+			if [ -n "$pcount" ] ; then
+			echo -n "UPDATE Playcounttable SET Playcount=$pcount, LastPlayed=FROM_UNIXTIME($tm) "
+			else
+			echo -n "UPDATE Playcounttable SET Playcount=Playcount+1, LastPlayed=FROM_UNIXTIME($tm) "
+			fi
+			echo -n "WHERE TTindex=$TTidx AND UNIX_TIMESTAMP(LastPlayed) < $tm;"
+			echo 
+			# insert when the above update returns 0 rows
+			echo -n "INSERT IGNORE into Playcounttable (TTindex,Playcount,Lastplayed) "
+			if [ -n "$pcount" ] ; then
+			echo -n "VALUES ($TTidx, $pcount, FROM_UNIXTIME($tm));"
+			else
+			echo -n "VALUES ($TTidx, 1, FROM_UNIXTIME($tm));"
+			fi
+			echo
+			) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+		else
+			(
+			# update Playcount only when it is not being updated by RompR
+			if [ -n "$pcount" ] ; then
+			echo -n "UPDATE Playcounttable SET Playcount=$pcount, LastPlayed=FROM_UNIXTIME($tm) "
+			else
+			echo -n "UPDATE Playcounttable SET Playcount=Playcount+1, LastPlayed=FROM_UNIXTIME($tm) "
+			fi
+			echo -n "WHERE TTindex=$TTidx AND UNIX_TIMESTAMP(LastPlayed) < $tm;"
+			echo 
+			# insert when the above update returns 0 rows
+			echo -n "INSERT IGNORE into Playcounttable (TTindex,Playcount,Lastplayed) "
+			if [ -n "$pcount" ] ; then
+			echo -n "VALUES ($TTidx, $pcount, FROM_UNIXTIME($tm));"
+			else
+			echo -n "VALUES ($TTidx, 1, FROM_UNIXTIME($tm));"
+			fi
+			echo
+			) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+		fi
+		if [ $? -ne 0 ] ; then
+			(
+			echo "ERROR: "
+			if [ -n "$pcount" ] ; then
+			echo -n "UPDATE Playcounttable SET Playcount=$pcount, LastPlayed=FROM_UNIXTIME($tm) "
+			else
+			echo -n "UPDATE Playcounttable SET Playcount=Playcount+1, LastPlayed=FROM_UNIXTIME($tm) "
+			fi
+			echo -n "WHERE TTindex=$TTidx AND UNIX_TIMESTAMP(LastPlayed) < $tm;"
+			echo 
+			echo -n "INSERT IGNORE into Playcounttable (TTindex,Playcount,Lastplayed) "
+			if [ -n "$pcount" ] ; then
+			echo -n "VALUES ($TTidx, $pcount, FROM_UNIXTIME($tm));"
+			else
+			echo -n "VALUES ($TTidx, 1, FROM_UNIXTIME($tm));"
+			fi
+			echo
+			) 1>&2
+			cat $MPDEV_TMPDIR/mysql.err
+			return 1
+		fi
+	fi
+	return 0
+}
+
+rompr_rating_update()
+{
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			return 0
+		fi
+	fi
+	turi=$(echo "$1" | sed s/"'"/"\\\'"/g)
+	tstamp="$2"
+	rompr_rating=`expr "$3" / 2`
+	if [ $# -eq 4 ] ; then
+		TTidx=$4
+	else
+		TTidx=`get_TTindex "$turi"`
+	fi
+	if [ -n "$TTidx" ] ; then
+		if [ -n "$MYSQL_SOCKET" ] ; then
+			(
+			echo -n "INSERT INTO Ratingtable (TTindex, Rating, zztimestamp) "
+			echo -n "VALUES ($TTidx, $rompr_rating, FROM_UNIXTIME($tstamp)) "
+			echo -n "ON DUPLICATE KEY UPDATE Rating = $rompr_rating, "
+			echo -n "zztimestamp=FROM_UNIXTIME($tstamp);"
+			echo
+			) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+		else
+			(
+			echo -n "INSERT INTO Ratingtable (TTindex, Rating, zztimestamp) "
+			echo -n "VALUES ($TTidx, $rompr_rating, FROM_UNIXTIME($tstamp)) "
+			echo -n "ON DUPLICATE KEY UPDATE Rating = $rompr_rating, "
+			echo -n "zztimestamp=FROM_UNIXTIME($tstamp);"
+			echo
+			) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+		fi
+		if [ $? -ne 0 ] ; then
+			if [ -n "$MYSQL_SOCKET" ] ; then
+				(
+				echo -n "ALTER TABLE Ratingtable ADD COLUMN zztimestamp TIMESTAMP DEFAULT "
+				echo -n "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP not null;"
+				echo
+				) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+			else
+				(
+				echo -n "ALTER TABLE Ratingtable ADD COLUMN zztimestamp TIMESTAMP DEFAULT "
+				echo -n "CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP not null;"
+				echo
+				) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+			fi
+			if [ $? -ne 0 ] ; then
+				(
+				echo "ERROR: "
+				echo -n "INSERT INTO Ratingtable (TTindex, Rating, zztimestamp) "
+				echo -n "VALUES ($TTidx, $rompr_rating, FROM_UNIXTIME($tstamp)) "
+				echo -n "ON DUPLICATE KEY UPDATE Rating = $rompr_rating, "
+				echo -n "zztimestamp=FROM_UNIXTIME($tstamp);"
+				echo
+				) 1>&2
+				cat $MPDEV_TMPDIR/mysql.err
+			fi
+			if [ -n "$MYSQL_SOCKET" ] ; then
+				(
+				echo -n "INSERT INTO Ratingtable (TTindex, Rating, zztimestamp) "
+				echo -n "VALUES ($TTidx, $rompr_rating, FROM_UNIXTIME($tstamp)) "
+				echo -n "ON DUPLICATE KEY UPDATE Rating = $rompr_rating, "
+				echo -n "zztimestamp=FROM_UNIXTIME($tstamp);"
+				echo
+				) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+			else
+				(
+				echo -n "INSERT INTO Ratingtable (TTindex, Rating, zztimestamp) "
+				echo -n "VALUES ($TTidx, $rompr_rating, FROM_UNIXTIME($tstamp)) "
+				echo -n "ON DUPLICATE KEY UPDATE Rating = $rompr_rating, "
+				echo -n "zztimestamp=FROM_UNIXTIME($tstamp);"
+				echo
+				) | mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+			fi
+			if [ $? -ne 0 ] ; then
+				(
+				echo "ERROR: "
+				echo -n "INSERT INTO Ratingtable (TTindex, Rating, zztimestamp) "
+				echo -n "VALUES ($TTidx, $rompr_rating, FROM_UNIXTIME($tstamp)) "
+				echo -n "ON DUPLICATE KEY UPDATE Rating = $rompr_rating, "
+				echo -n "zztimestamp=FROM_UNIXTIME($tstamp);"
+				echo
+				) 1>&2
+				cat $MPDEV_TMPDIR/mysql.err
+				return 1
+			fi
+		fi
+	fi
+	return 0
+}
+
+get_rompr_playcount_ts()
+{
+	ts=$1
+	if [ -n "$MYSQL_SOCKET" ] ; then
+		echo "SELECT Playcount,UNIX_TIMESTAMP(LastPlayed) FROM Playcounttable WHERE TTindex=$ts;" \
+			| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+	else
+		echo "SELECT Playcount,UNIX_TIMESTAMP(LastPlayed) FROM Playcounttable WHERE TTindex=$ts;" \
+			| mysql -s -u "$MYSQL_USER" -p"$MYSQL_PASS" -h $MYSQL_HOST "$MYSQL_DATABASE" 2>$MPDEV_TMPDIR/mysql.err
+	fi
+	if [ $? -ne 0 ] ; then
+		echo "ERROR: select Playcount,UNIX_TIMESTAMP(LastPlayed) FROM Playcounttable WHERE TTindex=$ts;" 1>&2
+		cat $MPDEV_TMPDIR/mysql.err
+		return 1
+	fi
+	return 0
+}
+
+scrobble()
+{
+	S_TITLE=$(echo $SONG_TITLE|tr \` \')
+	S_ARTIST=$(echo $SONG_ARTIST|tr \` \')
+	S_ALBUM=$(echo $SONG_ALBUM|tr \` \')
+	if [ -n "$SCROBBLE_LASTFM" ] ; then
+		if [ $VERBOSE -eq 1 ] ; then
+			echo lastfm-scrobbler --update --artist=\""$S_ARTIST"\" --album=\""$S_ALBUM"\" --track=\""$S_TITLE"\"  --duration=\""$SONG_DURATION"\"
+		fi
+		if [ $VERBOSE -eq 0 -o $VERBOSE -eq 1 ] ; then
+			lastfm-scrobbler --update --artist="$S_ARTIST" \
+				--album="$S_ALBUM" --track="$S_TITLE" \
+				--duration="$SONG_DURATION" > /dev/null
+		else
+			lastfm-scrobbler --update --artist="$S_ARTIST" \
+				--album="$S_ALBUM" --track="$S_TITLE" \
+				--duration="$SONG_DURATION"
+		fi
+	fi
+	if [ -n "$SCROBBLE_LIBREFM" ] ; then
+		if [ $VERBOSE -eq 1 ] ; then
+			echo librefm-scrobbler --update --artist=\""$S_ARTIST"\" --album=\""$S_ALBUM"\" --track=\""$S_TITLE"\"  --duration=\""$SONG_DURATION"\"
+		fi
+		if [ $VERBOSE -eq 0 -o $VERBOSE -eq 1 ] ; then
+			librefm-scrobbler --update --artist="$S_ARTIST" \
+				--album="$S_ALBUM" --track="$S_TITLE" \
+				--duration="$SONG_DURATION" > /dev/null
+		else
+			librefm-scrobbler --update --artist="$S_ARTIST" \
+				--album="$S_ALBUM" --track="$S_TITLE" \
+				--duration="$SONG_DURATION"
+		fi
+	fi
+}
+
+update_song()
+{
+	state="$1"
+	uri="$2"
+	echo $uri|grep -E "^http:|^https:" > /dev/null
+	no_db_update=0
+	csum=`echo "$uri"|cksum|awk '{print $1}'`
+	if [ -n "$NO_DB_UPDATE" ] ; then
+		if [ $NO_DB_UPDATE -ne 0 ] ; then
+			no_db_update=1
+		fi
+	fi
+	if [ " $state" = " now-playing" ] ; then
+		if [ -f $MPDEV_TMPDIR/start_time.$csum ] ; then
+			START_TIME=`cat $MPDEV_TMPDIR/start_time.$csum`
+		fi
+		# This is set by mpdev when setting initial_state
+		# With the help pf PLAYER_STATE we know the state that
+		# the player was in when mpdev was started
+		# If the song was already playing, we should create
+		# files related to the song in MPDEV_TMPDIR. If not,
+		# we should delete files related to the song.
+		if [ "$PLAYER_STATE" = "pause" ] ; then
+			if [ ! -f $MPDEV_TMPDIR/rating.$csum ] ; then
+				if [ $sticker_enabled -eq 1 ] ; then
+					rating=`get_mpd_rating "$uri"`
+				elif  [ -n "$ROMPR" ] ; then
+					tmp=`get_rompr_rating "$uri" | awk '{print $1}'`
+					rating=`expr $tmp \* 2`
+				elif [ $stats_enabled -eq 1 ] ; then
+					rating=`get_stats_rating "$uri"`
+				else
+					echo "Nothing to do"
+					exit 0
+				fi
+			fi
+			# Do not treat current song as New Song
+			for i in sticker rompr stats scrobble
+			do
+				if [ ! -f $MPDEV_TMPDIR/$i.$csum ] ; then
+					if [ ! -f $MPDEV_TMPDIR/$i.$csum ] ; then
+						if [ $VERBOSE -gt 0 ] ; then
+							echo "creating $MPDEV_TMPDIR/$i.$csum"
+						fi
+						touch $MPDEV_TMPDIR/$i.$csum
+					fi
+				fi
+			done
+			return 0
+		elif [ "$PLAYER_STATE" = "stop" ] ; then
+			for i in sticker rompr stats scrobble start_time rating pcount
+			do
+				if [ -f $MPDEV_TMPDIR/$i.$csum ] ; then
+					if [ $VERBOSE -gt 0 ] ; then
+						echo "removing $MPDEV_TMPDIR/$i.$csum"
+					fi
+					/bin/rm -f $MPDEV_TMPDIR/$i.$csum
+				fi
+			done
+			return 0
+		fi
+	fi
+	inserted=0
+	# presence of rating.$csum indicates that
+	# the script was run when a song started
+	# we are being called again
+	if [ -f $MPDEV_TMPDIR/rating.$csum ] ; then
+		rating=`cat $MPDEV_TMPDIR/rating.$csum`
+	else
+		# you can have ratings maintained in sticker, rompr or both
+		# prefer the sticker value as I use cantata more than rompr
+		# at the moment, because I started using cantata much
+		# before rompr. You may alter the script if you want
+		# but remember this script synchronizes both values
+		if [ $sticker_enabled -eq 1 ] ; then
+			rating=`get_mpd_rating "$uri"`
+		elif  [ -n "$ROMPR" ] ; then
+			tmp=`get_rompr_rating "$uri" | awk '{print $1}'`
+			rating=`expr $tmp \* 2`
+		elif [ $stats_enabled -eq 1 ] ; then
+			rating=`get_stats_rating "$uri"`
+		else
+			echo "Nothing to do"
+			exit 0
+		fi
+		if [ -z "$rating" ] ; then
+			if [ -f $HOME/.mpdev/AUTO_RATING ] ; then
+				rating=`cat $HOME/.mpdev/AUTO_RATING`
+			elif [ -n "$AUTO_RATING" ] ; then
+				rating=$AUTO_RATING # assign average rating of 3 for unrated music
+			else
+				rating=0
+			fi
+			inserted=1
+			if [ $sticker_enabled -eq 1 ] ; then
+				if [ ! -f $MPDEV_TMPDIR/sticker.$csum ] ; then
+					sticker_db_insert "$uri" "$rating"
+					touch $MPDEV_TMPDIR/sticker.$csum
+				fi
+			elif [ -n "$ROMPR" ] ; then
+				if [ ! -f $MPDEV_TMPDIR/rompr.$csum ] ; then
+					rompr_rating_update "$uri" "$START_TIME" "$rating"
+					touch $MPDEV_TMPDIR/rompr.$csumA
+				fi
+			elif [ $stats_enabled -eq 1 ] ; then
+				if [ ! -f $MPDEV_TMPDIR/stats.$csum ] ; then
+					stats_db_insert "$uri" "$rating"
+					touch $MPDEV_TMPDIR/stats.$csum
+				fi
+			fi
+		elif [ $rating -eq 0 ] ; then
+			if [ -f $HOME/.mpdev/AUTO_RATING ] ; then
+				rating=`cat $HOME/.mpdev/AUTO_RATING`
+			elif [ -n "$AUTO_RATING" ] ; then
+				rating=$AUTO_RATING # assign default rating as per value of AUTO_RATING
+			else
+				rating=0
+			fi
+			if [ $rating -gt 0 ] ; then
+				inserted=2
+				if [ $sticker_enabled -eq 1 ] ; then
+					if [ ! -f $MPDEV_TMPDIR/sticker.$csum ] ; then
+						sticker_db_update "$uri" "$rating"
+						touch $MPDEV_TMPDIR/sticker.$csum
+					fi
+				elif [ -n "$ROMPR" ] ; then
+					if [ ! -f $MPDEV_TMPDIR/rompr.$csum ] ; then
+						rompr_rating_update "$uri" "$START_TIME" "$rating"
+						touch $MPDEV_TMPDIR/rompr.$csum
+					fi
+				elif  [ $stats_enabled -eq 1 ] ; then
+					if [ ! -f $MPDEV_TMPDIR/stats.$csum ] ; then
+						# update rating
+						stats_db_update "$uri" "$rating" "$START_TIME" 0
+						touch $MPDEV_TMPDIR/stats.$csum
+					fi
+				fi
+			fi
+		else
+			inserted=0
+		fi
+	fi
+	prev_last_played=$(get_stat_last_played "$uri")
+	if [ $VERBOSE -gt 0 ] ; then
+		if [ ! -f $MPDEV_TMPDIR/rating.$csum -a " $state" = " now-playing" ] ; then
+			if [ $gnu_date -eq 1 ] ; then
+				echo -n "NewSong [$csum] Start=$START_TIME [`date +"%Y-%m-%d %H:%M:%S" --date=@"$START_TIME"`] "
+			else
+				echo -n "NewSong [$csum] Start=$START_TIME [`date -r "$START_TIME" +"%Y-%m-%d %H:%M:%S"`] "
+			fi
+			echo    "duration=$SONG_DURATION rating=[$rating]"
+			if [ -n "$prev_last_played" ] ; then
+				days_back=$(expr \( $START_TIME - $prev_last_played \) / 86400)
+				pcount_s=$(get_stat_playcount "$uri")
+				if [ -z "$pcount_s" ] ; then
+					pcount_s="0"
+				fi
+				if [ $gnu_date -eq 1 ] ; then
+					echo -n "  LAST PLAYED=$days_back days back [`date +"%Y-%m-%d %H:%M:%S" --date=@"$prev_last_played"`] Plays: $pcount_s"
+				else
+					echo -n "  LAST PLAYED=$days_back days back [`date -r "$prev_last_played" +"%Y-%m-%d %H:%M:%S"`] Plays: $pcount_s"
+				fi
+			else
+				pcount_s=0
+				echo -n "  LAST PLAYED=never Plays: $pcount_s"
+			fi
+			if [ -n "$SONG_PLAYED_DURATION" ] ; then
+				echo ", song pos=$SONG_PLAYED_DURATION"
+			else
+				echo ""
+			fi
+			echo $pcount_s > $MPDEV_TMPDIR/pcount.$csum
+			echo    "uri=[$uri]"
+			if [ $no_db_update -eq 0 ] ; then
+				if [ $inserted -eq 1 ] ; then
+					if [ $sticker_enabled -eq 1 ] ; then
+						echo "INSERT stker rating=$rating"
+					elif [ -n "$ROMPR" ] ; then
+						echo "INSERT RompR rating=$rating  Start=$START_TIME"
+					elif  [ $stats_enabled -eq 1 ] ; then
+						echo "INSERT stats rating=$rating"
+					fi
+				elif [ $inserted -eq 2 ] ; then
+					if [ $sticker_enabled -eq 1 ] ; then
+						echo "UPDATE stker rating=$rating"
+					elif [ -n "$ROMPR" ] ; then
+						echo "UPDATE RompR rating=$rating  Start=$START_TIME"
+					elif  [ $stats_enabled -eq 1 ] ; then
+						echo "UPDATE stats rating=$rating"
+					fi
+				fi
+			fi
+		fi
+	fi
+	if [ ! "$state" = "end-song" -a ! -f $MPDEV_TMPDIR/rating.$csum ] ; then
+		echo $rating > $MPDEV_TMPDIR/rating.$csum
+	fi
+	case "$state" in
+		"now-playing")
+		if [ ! -f $MPDEV_TMPDIR/start_time.$csum ] ; then
+			if [ -n "$START_TIME" ] ; then
+				echo $START_TIME > $MPDEV_TMPDIR/start_time.$csum
+			fi
+		else
+			START_TIME=`cat $MPDEV_TMPDIR/start_time.$csum`
+		fi
+		if [ $stats_enabled -eq 1 -a ! -f $MPDEV_TMPDIR/stats.$csum ] ; then
+			stats_db_insert "$uri" "$rating"
+			if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+				echo "INSERT stats rating=$rating  Start=$START_TIME"
+			fi
+			touch $MPDEV_TMPDIR/stats.$csum
+		fi
+		if [ $sticker_enabled -eq 1 -a -n "$ROMPR" -a ! -f $MPDEV_TMPDIR/rompr.$csum ] ; then
+			rompr_rating_update "$uri" "$START_TIME" "$rating"
+			if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+				tmp1=`expr "$rating" / 2`
+				echo "UPDATE RompR rating=$tmp1  Start=$START_TIME"
+			fi
+			touch $MPDEV_TMPDIR/rompr.$csum
+		fi
+		if [ -n "$SCROBBLE_LIBREFM" -o -n "$SCROBBLE_LASTFM" ] ; then
+			if [ ! -f $MPDEV_TMPDIR/scrobble.$csum ] ; then
+				if [ ! " $PLAYER_STATE" = " pause" -a ! " $PLAYER_STATE" = " stop" ] ; then
+					scrobble
+					touch $MPDEV_TMPDIR/scrobble.$csum
+				fi
+			fi
+		fi
+		;;
+		"end-song"|"pause-song")
+		if [ " $state" = " end-song" ] ; then
+			if [ -z "$END_TIME" ] ; then
+				exit 0
+			fi
+			if [ -f $MPDEV_TMPDIR/end.$csum ] ; then
+				/bin/rm -f $MPDEV_TMPDIR/end.$csum
+				exit 0
+			else
+				touch $MPDEV_TMPDIR/end.$csum
+			fi
+		fi
+		if [ -f $MPDEV_TMPDIR/start_time.$csum ] ; then
+			START_TIME=`cat $MPDEV_TMPDIR/start_time.$csum`
+		fi
+		if [ -n "$ROMPR" ] ; then
+			rompr_uri=$(echo "$uri" | sed s/"'"/"\\\'"/g)
+			TTindex=`get_TTindex "$rompr_uri"`
+		fi
+		# sync rating between sticker and rompr
+		if [ $sticker_enabled -eq 1 -a -n "$ROMPR" ] ; then
+			rating=`get_mpd_rating "$uri"`
+			if [ -f $MPDEV_TMPDIR/rating.$csum ] ; then
+				old_rating=`cat $MPDEV_TMPDIR/rating.$csum`
+			else
+				old_rating=`get_stat_rating $uri`
+			fi
+			if [ -z "$old_rating" ] ; then
+				old_rating=0
+			fi
+			if [ -n "$TTindex" ] ; then
+				# we get the timestamp for the rating entry from Ratingtable
+				line=`get_rompr_rating $TTindex`
+				if [ -n "$line" ] ; then
+					set $line
+					rompr_rating=$1
+					tstamp=$2
+				else
+					rompr_rating=-1
+					tstamp=-1
+				fi
+				#
+				# check of rompr Rating table has newer entry. If yes update sticker and stats
+				# check of sticker has a rating different rating than rompr. If yes, update rompr
+				#
+				if [ -n "$line" ] && [ $tstamp -gt $START_TIME ] && [ $rompr_rating -gt 0 ] ; then
+					# rompr Rating table has a newer entry
+					tmp=`expr $rompr_rating \* 2`
+					if [ $tmp -ne $rating ] ; then
+						rating=$tmp
+						# update sticker with rating from rompr
+						sticker_db_update "$uri" $rating
+						if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+							echo "UPDATE stker from RompR new=$tmp old=$rating, TTindex=$TTindex, Times=old[$START_TIME], new[$tstamp]"
+						fi
+						echo $rating > $MPDEV_TMPDIR/rating.$csum
+					fi
+				elif [ $old_rating -gt 0 ] && [ $old_rating -ne $rating ] ; then # sticker table has a newer entry
+					# sticker table has a newer entry
+					echo $rating > $MPDEV_TMPDIR/rating.$csum
+					# update rompr with rating from sticker
+					rompr_rating_update "$uri" "$START_TIME" "$rating" "$TTindex"
+					if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+						tmp1=`expr "$rating" / 2`
+						tmp2=`expr "$old_rating" / 2`
+						echo "UPDATE RompR from stker new=$tmp1 old=$tmp2, TTindex=$TTindex, Times=old[$START_TIME], new[$START_TIME]"
+					fi
+				fi
+			fi
+		fi
+		# Update Rating / Play Counts
+		if [ -z "$MIN_PLAY_PERCENT" ] ; then
+			MIN_PLAY_PERCENT=75
+		fi
+		if [ -n "$SONG_PLAYED_DURATION" ] ; then
+			percent=$(awk "BEGIN { pc=100*${SONG_PLAYED_DURATION}/${SONG_DURATION}; i=int(pc); print (pc-i<0.5)?i:i+1 }")
+			if [ " $percent" = " 0.0" ] ; then
+				percent=0
+			fi
+			var=$(awk 'BEGIN {print ('$percent\>=$MIN_PLAY_PERCENT')}')
+		else
+			var=0
+		fi
+		if [ $stats_enabled -eq 1 ] ; then
+			# update rating + playcount
+			if [ -f $MPDEV_TMPDIR/stats_playcount.$csum ] ; then
+				stats_db_update "$uri" "$rating" "$START_TIME" 0
+				if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+					echo "UPDATE stats Start=$START_TIME End=$END_TIME rating=[$rating]"
+				fi
+			else
+				if [ -n "$SONG_PLAYED_DURATION" ] ; then
+					if [ $var -eq 0 ] ; then
+						downgrade_karma "$uri"
+					fi
+					if [ $var -eq 0 ] ; then
+						echo "SONG [$csum] "$percent"% played duration=$SONG_PLAYED_DURATION secs (partial)"
+					else
+						echo "SONG [$csum] "$percent"% played duration=$SONG_PLAYED_DURATION secs (full)"
+					fi
+				fi
+				if [ $var -eq 1 ] ; then
+					if [ -f $MPDEV_TMPDIR/pcount.$csum ] ; then
+						pcount_s=$(cat $MPDEV_TMPDIR/pcount.$csum)
+					else
+						pcount_s=$(get_stat_playcount "$uri")
+					fi
+					if [ -n "$pcount_s" ] ; then
+						pcount_s=$(expr $pcount_s + 1)
+					fi
+					if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+						if [ -z "$pcount_s" ] ; then
+							echo "UPDATE stats Playcount rating=[$rating] Start=$START_TIME End=$END_TIME"
+						else
+							echo "UPDATE stats Playcount Playcount=$pcount_s, rating=[$rating] Start=$START_TIME End=$END_TIME"
+						fi
+					fi
+					stats_db_update "$uri" "$rating" "$START_TIME" 1
+					touch $MPDEV_TMPDIR/stats_playcount.$csum
+				else
+					pcount_s=""
+				fi
+			fi
+		fi
+		# Update Play Counts in rompr Playcounttable
+		if [ -n "$ROMPR" -a $var -eq 1 -a -n "$TTindex" -a ! -f $MPDEV_TMPDIR/rompr_playcount.$csum ] ; then
+			if [ -n "$pcount_s" ] ; then
+				if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+					echo -n "UPDATE RompR Playcount Playcount=$pcount_s, TTindex=$TTindex "
+					if [ $gnu_date -eq 1 ] ; then
+						echo "[ts=$END_TIME][`date +"%Y-%m-%d %H:%M:%S" --date=@"$END_TIME"`] mpdev"
+					else
+						echo "[ts=$END_TIME][`date -r "$END_TIME" +"%Y-%m-%d %H:%M:%S"`] mpdev"
+					fi
+				fi
+				rompr_update_playcount "$rompr_uri" "$START_TIME" "$pcount_s" "$TTindex"
+			else
+				#hopefully update will be successfull
+				line=`get_rompr_playcount_ts "$TTindex"`
+				if [ -z "$line" ] ; then
+					pcount_r="1"
+					ts=$START_TIME
+				else
+					set $line
+					pcount_r=$(expr $1 + 1)
+					ts=$2
+				fi
+				if [ $VERBOSE -gt 0 -a $no_db_update -eq 0 ] ; then
+					echo -n "UPDATE RompR Playcount Playcount=$pcount_r, TTindex=$TTindex "
+					if [ -n "$ts" ] && [ $ts -gt $START_TIME ] && [ $ts -lt $END_TIME ] ; then
+						if [ $gnu_date -eq 1 ] ; then
+							echo "[ts=$ts][`date +"%Y-%m-%d %H:%M:%S" --date=@"$ts"`] RompR"
+						else
+							echo "[ts=$ts][`date -r "$ts" +"%Y-%m-%d %H:%M:%S"`] RompR"
+						fi
+					else
+						if [ $gnu_date -eq 1 ] ; then
+							echo "[ts=$END_TIME][`date +"%Y-%m-%d %H:%M:%S" --date=@"$END_TIME"`] mpdev/RompR"
+						else
+							echo "[ts=$END_TIME][`date -r "$END_TIME" +"%Y-%m-%d %H:%M:%S"`] mpdev/RompR"
+						fi
+					fi
+				fi
+				rompr_update_playcount "$rompr_uri" "$START_TIME" "$pcount_r" "$TTindex"
+			fi
+			touch $MPDEV_TMPDIR/rompr_playcount.$csum
+		fi
+		if [ " $state" = " end-song" ] ; then
+			if [ $VERBOSE -gt 0 ] ; then
+				if [ -n "$END_TIME" ] ; then
+					if [ $gnu_date -eq 1 ] ; then
+						echo -n "EndSong [$csum] Start=$START_TIME [`date +"%Y-%m-%d %H:%M:%S" --date=@"$START_TIME"`] "
+						echo    "End=$END_TIME [`date +"%Y-%m-%d %H:%M:%S" --date=@"$END_TIME"`]"
+					else
+						echo -n "EndSong [$csum] Start=$START_TIME [`date -r "$START_TIME" +"%Y-%m-%d %H:%M:%S"`] "
+						echo    "End=$END_TIME [`date -r "$END_TIME" +"%Y-%m-%d %H:%M:%S"`]"
+					fi
+					echo
+				fi
+			fi
+			/bin/rm -f $MPDEV_TMPDIR/stats.$csum $MPDEV_TMPDIR/scrobble.$csum \
+				$MPDEV_TMPDIR/rompr.$csum $MPDEV_TMPDIR/sticker.$csum \
+				$MPDEV_TMPDIR/start_time.$csum $MPDEV_TMPDIR/rating.$csum \
+				$MPDEV_TMPDIR/stats_playcount.$csum $MPDEV_TMPDIR/rompr_playcount.$csum \
+				$MPDEV_TMPDIR/percent_played $MPDEV_TMPDIR/pcount.$csum $MPDEV_TMPDIR/end.$csum \
+				$MPDEV_TMPDIR/mysql.err
+		elif [ " $state" = " pause-song" ] ; then
+			if [ $VERBOSE -gt 0 ] ; then
+				if [ -n "$END_TIME" ] ; then
+					if [ $gnu_date -eq 1 ] ; then
+						echo -n "PauseSong [$csum] Start=$START_TIME [`date +"%Y-%m-%d %H:%M:%S" --date=@"$START_TIME"`] "
+						echo    "End=$END_TIME [`date +"%Y-%m-%d %H:%M:%S" --date=@"$END_TIME"`]"
+					else
+						echo -n "PauseSong [$csum] Start=$START_TIME [`date -r "$START_TIME" +"%Y-%m-%d %H:%M:%S"`] "
+						echo    "End=$END_TIME [`date -r "$END_TIME" +"%Y-%m-%d %H:%M:%S"`]"
+					fi
+				fi
+			fi
+		fi
+		;; # end-song|pause-song
+	esac
+}
+
+if [ -z "$VERBOSE" ] ; then
+	VERBOSE=0
+fi
+SYSTEM=$(uname -s)
+case "$SYSTEM" in
+	Linux)
+	gnu_date=1
+	;;
+	*)
+	gnu_date=0
+	;;
+esac
+# we don't handle stream uri currently
+echo $SONG_URI|grep -E "^http:|^https:" > /dev/null
+if [ $? -eq 0 ] ; then
+	echo "Streaming $SONG_URI"
+	exit 0
+fi
+music_dir=`get_mpd_conf_value music_directory`
+if [ $? -ne 0 ] ; then
+	echo "could not get music directory from mpd.conf" 1>&2
+	exit 1
+fi
+sticker_file=`get_mpd_conf_value sticker_file`
+if [ $? -ne 0 ] ; then
+    sticker_enabled=0
+else
+	if [ -f $sticker_file ] ; then
+		sticker_enabled=1
+	else
+		sticker_enabled=0
+	fi
+fi
+stats_dir=$(dirname $sticker_file)
+stats_file=$stats_dir/stats.db
+if [ -f $stats_file ] ; then
+	stats_enabled=1
+else
+	stats_enabled=0
+fi
+if [ -z "$MPDEV_TMPDIR" ] ; then
+	MPDEV_TMPDIR=/tmp/mpdev
+fi
+mkdir -p $MPDEV_TMPDIR
+if [ $VERBOSE -eq 2 ] ; then
+	env > $MPDEV_TMPDIR/.env.log
+fi
+update_song "$1" "$SONG_URI"
+if ( test -n "$LCD_HOST" && test -n "$LCD_PORT" ) || ( test -n "$LCD_FIFO" ) ; then
+	if [ -z "$pcount_s" ] ; then
+		pcount_s=0
+	fi
+	if [ -x $HOME/.mpdev/lcd_display ] ; then
+		env RATING=$rating PLAYCOUNT=$pcount_s $HOME/.mpdev/lcd_display "$1"
+	elif [ -x /usr/local/libexec/mpdev/lcd_display ] ; then
+		env RATING=$rating PLAYCOUNT=$pcount_s /usr/local/libexec/mpdev/lcd_display "$1"
+	fi
+fi
+exit 0
+
+# $Log: player.in,v $
+# Revision 1.52  2023-06-30 20:28:38+05:30  Cprogrammer
+# set PLAYCOUNT env variable for lcd_display
+#
+# Revision 1.51  2023-06-30 10:17:29+05:30  Cprogrammer
+# added use of fifo for accessing LCD display
+#
+# Revision 1.50  2023-06-29 10:36:28+05:30  Cprogrammer
+# use $HOME/.mpdev/lcd_display or libexec/mpdev/lcd_display
+#
+# Revision 1.49  2023-06-26 23:18:17+05:30  Cprogrammer
+# set song rating as env variable for lcd_display
+#
+# Revision 1.48  2023-06-25 11:18:38+05:30  Cprogrammer
+# run lcd_display script
+#
+# Revision 1.47  2022-06-26 23:15:35+05:30  Cprogrammer
+# use variables from ./configure
+#
+# Revision 1.46  2022-01-17 19:09:28+05:30  Cprogrammer
+# fixed scrobbling getting skipped
+#
+# Revision 1.45  2022-01-16 22:30:28+05:30  Cprogrammer
+# scrobble only when PLAYER_STATE is play
+#
+# Revision 1.44  2021-11-18 23:50:09+05:30  Cprogrammer
+# display mysql error
+#
+# Revision 1.43  2021-10-10 21:59:30+05:30  Cprogrammer
+# fixed non-skipping of db update for streams
+#
+# Revision 1.42  2021-09-30 20:31:49+05:30  Cprogrammer
+# use -noheader option to prevent .sqlitrc settings messing with results
+#
+# Revision 1.41  2021-09-28 16:23:39+05:30  Cprogrammer
+# fix INSERT statement for extra (last_modified) field added to sticker table
+# skip db_update for streams
+#
+# Revision 1.40  2021-09-16 22:17:40+05:30  Cprogrammer
+# sanitize shell input for scrobble
+#
+# Revision 1.39  2021-09-16 21:03:02+05:30  Cprogrammer
+# disable UPDATE/INSERT echo statements when NO_DB_UPDATE is set
+#
+# Revision 1.38  2021-09-08 15:06:28+05:30  Cprogrammer
+# rating shouldn't be created on end-song
+#
+# Revision 1.37  2021-04-26 20:56:27+05:30  Cprogrammer
+# skip RompR playcount update when song is not fully heard
+#
+# Revision 1.36  2021-04-26 09:24:13+05:30  Cprogrammer
+# display initial song position in NewSong
+#
+# Revision 1.35  2021-04-25 20:27:54+05:30  Cprogrammer
+# fixed value of play counts in logs and RompR update
+#
+# Revision 1.34  2021-04-25 18:07:03+05:30  Cprogrammer
+# refactored update of rompr playcounts
+#
+# Revision 1.33  2021-04-25 15:50:05+05:30  Cprogrammer
+# skip update of last_played when paused to avoid karma getting increased
+#
+# Revision 1.32  2021-04-25 13:35:56+05:30  Cprogrammer
+# sync RompR playcounts from stats.db
+#
+# Revision 1.31  2021-04-25 10:32:07+05:30  Cprogrammer
+# added log output for scrobbling
+#
+# Revision 1.30  2021-04-25 10:10:07+05:30  Cprogrammer
+# added code comments
+#
+# Revision 1.29  2021-04-24 22:13:54+05:30  Cprogrammer
+# removed redundant code
+#
+# Revision 1.28  2021-04-24 20:48:30+05:30  Cprogrammer
+# prevent end-song getting executed twice when playlist ends
+#
+# Revision 1.27  2021-04-24 14:51:52+05:30  Cprogrammer
+# skip percentage calculation when SONG_PLAYED_DURATION is not set
+#
+# Revision 1.26  2021-04-23 16:46:08+05:30  Cprogrammer
+# renamed SONG_PLAYED to SONG_PLAYED_DURATION
+#
+# Revision 1.25  2021-04-23 16:44:05+05:30  Cprogrammer
+# fixed song played duration
+#
+# Revision 1.24  2021-04-22 20:15:53+05:30  Cprogrammer
+# display correct playcount in rompr table
+#
+# Revision 1.23  2021-04-22 19:18:44+05:30  Cprogrammer
+# skip update of play_count when song is skipped
+#
+# Revision 1.22  2021-04-16 21:11:02+05:30  Cprogrammer
+# added upgrade karma logic
+#
+# Revision 1.21  2021-04-15 20:06:06+05:30  Cprogrammer
+# skip db update if NO_DB_UPDATE is defined and non-zero
+#
+# Revision 1.20  2021-04-15 11:55:19+05:30  Cprogrammer
+# downgrade karma of a song if skipped
+#
+# Revision 1.19  2021-04-14 21:50:55+05:30  Cprogrammer
+# display song played duration
+#
+# Revision 1.18  2020-08-27 14:29:29+05:30  Cprogrammer
+# auto rate if $HOME/.mpdev/AUTO_RATING file is present
+# fixed path of stats.db
+#
+# Revision 1.17  2020-08-18 08:15:56+05:30  Cprogrammer
+# minor fixes
+#
+# Revision 1.16  2020-08-17 22:17:19+05:30  Cprogrammer
+# added playpause
+#
+# Revision 1.15  2020-08-10 20:35:40+05:30  Cprogrammer
+# fixed debug message call
+#
+# Revision 1.14  2020-08-10 17:25:14+05:30  Cprogrammer
+# replaced /tmp/mpdev with MPDEV_TMPDIR
+# exit now-playing when in pause or stop state
+#
+# Revision 1.13  2020-08-10 11:54:38+05:30  Cprogrammer
+# skip http urls
+#
+# Revision 1.12  2020-08-09 20:50:50+05:30  Cprogrammer
+# use unix domain socket if MYSQL_SOCKET env variable is defined
+#
+# Revision 1.11  2020-07-28 12:47:21+05:30  Cprogrammer
+# added zztimestamp filed to Ratingtable
+# fixed typo UNIX_TIMESTAMP
+#
+# Revision 1.10  2020-07-24 21:48:34+05:30  Cprogrammer
+# for song-end exit if END_TIME is not set
+#
+# Revision 1.9  2020-07-22 15:51:33+05:30  Cprogrammer
+# use AUTO_RATING env variable
+#
+# Revision 1.8  2020-07-21 22:28:19+05:30  Cprogrammer
+# display rating for RompR in logs in RompR scale
+#
+# Revision 1.7  2020-07-21 19:20:29+05:30  Cprogrammer
+# BUG. fixed rating tmp filename
+#
+# Revision 1.6  2020-07-21 18:31:38+05:30  Cprogrammer
+# added error condition for getting rating from Ratingtable.
+#
+# Revision 1.5  2020-07-21 18:02:29+05:30  Cprogrammer
+# create temp file for recording original start time
+#
+# Revision 1.4  2020-07-21 17:04:02+05:30  Cprogrammer
+# option to run without sticker or stats db enabled
+#
+# Revision 1.3  2020-07-21 12:25:20+05:30  Cprogrammer
+# added get_rompr_playcount_ts() function to get playcount and timestamp from Playcounttable
+#
+# Revision 1.2  2020-07-20 15:58:32+05:30  Cprogrammer
+# multiple fixes to work properly with rompr
+#
+# Revision 1.1  2020-07-19 18:14:10+05:30  Cprogrammer
+# Initial revision
+#

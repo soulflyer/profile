@@ -1,0 +1,130 @@
+#!/bin/bash
+#
+# $Log: playpause.in,v $
+# Revision 1.16  2023-06-30 21:00:37+05:30  Cprogrammer
+# pass RATING, PLAYCOUNT env variable to lcd_display
+#
+# Revision 1.15  2023-06-30 10:18:10+05:30  Cprogrammer
+# added use of fifo for accessing LCD display
+#
+# Revision 1.14  2023-06-29 10:36:33+05:30  Cprogrammer
+# use $HOME/.mpdev/lcd_display or libexec/mpdev/lcd_display
+#
+# Revision 1.13  2023-06-25 11:20:17+05:30  Cprogrammer
+# run lcd_display program
+#
+# Revision 1.12  2022-06-20 01:06:51+05:30  Cprogrammer
+# fixed date syntax for non-gnu date
+#
+# Revision 1.11  2021-04-26 10:01:33+05:30  Cprogrammer
+# display song played duration in playpause
+#
+# Revision 1.10  2021-04-24 20:48:53+05:30  Cprogrammer
+# prevent end-song getting executed twice when playlist ends
+#
+# Revision 1.9  2021-04-24 14:52:15+05:30  Cprogrammer
+# skip percentage calculation when SONG_PLAYED_DURATION is not set
+#
+# Revision 1.8  2021-04-23 18:43:42+05:30  Cprogrammer
+# display date in %Y-%m-%d %H:%M%S during play/pause
+#
+# Revision 1.7  2021-04-23 16:46:18+05:30  Cprogrammer
+# renamed SONG_PLAYED to SONG_PLAYED_DURATION
+#
+# Revision 1.6  2021-04-23 16:44:22+05:30  Cprogrammer
+# use SONG_PLAYED instead of ELAPSED_TIME
+#
+# Revision 1.5  2021-04-23 10:16:17+05:30  Cprogrammer
+# fixed end-song, pause-song getting skipped
+#
+# Revision 1.4  2021-04-19 22:07:08+05:30  Cprogrammer
+# create /tmp/mpdev directory
+#
+# Revision 1.3  2021-04-15 11:55:39+05:30  Cprogrammer
+# fix awk script for checking percent
+#
+# Revision 1.2  2020-08-18 08:16:37+05:30  Cprogrammer
+# use export command instead of declare
+#
+# Revision 1.1  2020-08-14 13:44:57+05:30  Cprogrammer
+# Initial revision
+#
+#
+# $Id: playpause.in,v 1.16 2023-06-30 21:00:37+05:30 Cprogrammer Exp mbhangui $
+#
+
+if [ -z "$VERBOSE" ] ; then
+	VERBOSE=0
+fi
+# we don't handle stream uri currently
+echo $SONG_URI|grep "^http://" >/dev/null
+if [ $? -eq 0 ] ; then
+	exit 0
+fi
+SYSTEM=$(uname -s)
+case "$SYSTEM" in
+	Linux)
+	gnu_date=1
+	;;
+	*)
+	gnu_date=0
+	;;
+esac
+if [ -z "$MPDEV_TMPDIR" ] ; then
+	MPDEV_TMPDIR=/tmp/mpdev
+fi
+mkdir -p $MPDEV_TMPDIR
+csum=`echo "$SONG_URI"| cksum | awk '{print $1}'`
+if [ $VERBOSE -gt 0 ] ; then
+	t=$(date +'%s')
+	if [ $gnu_date -eq 1 ] ; then
+		echo "$0: PLAYER_STATE=$PLAYER_STATE [$t] [`date +"%Y-%m-%d %H:%M:%S" --date=@"$t"`] pos=$SONG_PLAYED_DURATION"
+	else
+		echo "$0: PLAYER_STATE=$PLAYER_STATE [$t] [`date -r "$t" +"%Y-%m-%d %H:%M:%S"`] pos=$SONG_PLAYED_DURATION"
+	fi
+fi
+if [ " $PLAYER_STATE" = " play" ] ; then
+	if [ ! -f $MPDEV_TMPDIR/start_time.$csum ] ; then
+		echo $START_TIME > $MPDEV_TMPDIR/start_time.$csum
+		if [ -f $MPDEV_TMPDIR/stats.$csum ] ; then
+			touch -r $MPDEV_TMPDIR/stats.$csum $MPDEV_TMPDIR/start_time.$csum
+		fi
+	fi
+	exit 0
+fi
+if [ -z "$MIN_PLAY_PERCENT" ] ; then
+	MIN_PLAY_PERCENT=75
+fi
+if [ -f $MPDEV_TMPDIR/start_time.$csum ] ; then
+	START_TIME=`cat $MPDEV_TMPDIR/start_time.$csum`
+else
+	if [ -f $MPDEV_TMPDIR/sticker.$csum ] ; then
+		START_TIME=$(stat --terse $MPDEV_TMPDIR/stats.$csum | awk '{print $13}')
+	fi
+	echo $START_TIME > $MPDEV_TMPDIR/start_time.$csum
+	touch -r $MPDEV_TMPDIR/stats.$csum $MPDEV_TMPDIR/start_time.$csum
+fi
+
+if [ " $PLAYER_STATE" = " pause" ] ; then
+	END_TIME=$(date +'%s')
+	export END_TIME=$END_TIME
+	exec $HOME/.mpdev/player pause-song
+fi
+if [ " $PLAYER_STATE" = " stop" ] ; then
+	END_TIME=$(date +'%s')
+	export END_TIME=$END_TIME
+	if [ ! -f $MPDEV_TMPDIR/end.$csum ] ; then
+		exec $HOME/.mpdev/player end-song
+	fi
+fi
+if ( test -n "$LCD_HOST" && test -n "$LCD_PORT" ) || ( test -n "$LCD_FIFO" ) ; then
+	if [ "$PLAYER_STATE" = "pause" -o "$PLAYER_STATE" = "resume" ] ; then
+		RATING=$(cat $MPDEV_TMPDIR/rating.$csum)
+		PLAYCOUNT=$(cat $MPDEV_TMPDIR/pcount.$csum)
+		if [ -x $HOME/.mpdev/lcd_dislay ] ; then
+			env RATING="$RATING" PLAYCOUNT="$PLAYCOUNT" $HOME/.mpdev/lcd_display "$PLAYER_STATE"
+		elif [ -x /usr/local/libexec/mpdev/lcd_dislay ] ; then
+			env RATING="$RATING" PLAYCOUNT="$PLAYCOUNT" /usr/local/libexec/mpdev/lcd_dislay "$PLAYER_STATE"
+		fi
+	fi
+fi
