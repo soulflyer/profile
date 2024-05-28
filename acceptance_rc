@@ -12,6 +12,8 @@ source /opt/homebrew/etc/bash_completion.d/mpc
 export LSCOLORS=Exfxcxdxbxegedabagacad
 alias ls="ls -G"
 
+export INFOPATH="~/.info:/opt/homebrew/Cellar/emacs-head@29/29.2_1/share/info/emacs"
+
 # Completion stuff
 # ================
 # https://stackoverflow.com/a/58308956/1671119
@@ -21,3 +23,4 @@ export BASH_COMPLETION_COMPAT_DIR="/opt/homebrew/etc/bash_completion.d"
 # This one makes __git_complete work for aliases like gp. Has to be manually loaded or it wont exist until after git commit is called.
 [ -f /opt/homebrew/etc/bash_completion.d/git-completion.bash ] && . /opt/homebrew/etc/bash_completion.d/git-completion.bash
 __git_complete gp _git_checkout
+

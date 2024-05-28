@@ -206,7 +206,7 @@ else
     WINDOW=''
 fi
 
-WINTOPSTATUS=$(yabai -m query --windows --window | jq '."level"') 2> /dev/null
+WINTOPSTATUS=$(yabai -m query --windows --window | jq '."sub-level"') 2> /dev/null
 
 if [[ $WINTOPSTATUS == "3" ]]; then
     WINTOPSTATUS=$WINTOPTRUE
