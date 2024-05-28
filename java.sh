@@ -17,3 +17,9 @@ j13() {
     echo "$JAVA_HOME"
     echo "Setting java to version 13"
 }
+
+j16() {
+    export JAVA_HOME=`/usr/libexec/java_home -v 16`
+    echo "$JAVA_HOME"
+    echo "Setting java to version 16"
+}
