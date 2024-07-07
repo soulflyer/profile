@@ -7,11 +7,8 @@
                  :max-consecutive   1
                  :insert-padding    true
                  :trim-consecutive? true}
-  :types        {:enabled? false}
-  :functions    {:enabled? false}
   :eof-new-line {:enabled? true}
-  :namespaces   {:enabled?    true
-                 :break-libs true
-                 :indent-size 2}
-  :indentation  {:indents {with-let   [[:inner 0]]
-                           r/with-let [[:inner 0]]}}}}
+  :namespaces   {:enabled?    false
+                 :break-libs? true
+                 :import-break-width 80
+                 :indent-size 2}}}
