@@ -6,3 +6,4 @@ nohup.out
 mpd.log
 mpd.pid
 mpdstate
+*.bak
