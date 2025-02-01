@@ -66,7 +66,7 @@ get_rompr_rating()
 get_mpd_rating()
 {
 	turi=`echo $1|sed -e "s{'{''{g"`
-	sqlite3 -noheader -batch $sticker_file "SELECT value FROM sticker WHERE type='song' AND uri='$turi';"
+	sqlite3 -noheader -batch $sticker_file "SELECT value FROM sticker WHERE type='song' AND name='rating' AND uri='$turi';"
 	if [ $? -ne 0 ] ; then
 		echo "ERROR: SELECT value FROM sticker WHERE type='song' AND uri=\"$turi\";" 1>&2
 		return 1
