@@ -35,7 +35,7 @@ alias eco="emacsclient -e '(org-agenda-list)' -tty"
 
 alias eg="emacsclient -c &"
 alias egf="emacsclient -c -F\"'(fullscreen . maximized)\" &"
-alias EG="SUDO_EDITOR=\"emacsclient -c\" sudo -e &"
+alias EG="SUDO_EDITOR=\"emacsclient -c\" sudo -e"
 alias egb="emacsclient -e '(ibuffer)' -c &"
 alias egd="emacsclient -c . &"
 alias egc="emacsclient -e '(calendar)' -c &"
