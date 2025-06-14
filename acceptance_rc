@@ -12,7 +12,8 @@ source /opt/homebrew/etc/bash_completion.d/mpc
 export LSCOLORS=Exfxcxdxbxegedabagacad
 alias ls="ls -G"
 
-export INFOPATH="~/.info:/opt/homebrew/Cellar/emacs-head@29/29.2_1/share/info/emacs"
+# FIXME info nodes are not being set correctly, possibly because this path was being set
+export INFOPATH="~/.info:/opt/homebrew/Cellar/emacs-head@29/29.2_1/share/info/emacs:"
 
 # Completion stuff
 # ================

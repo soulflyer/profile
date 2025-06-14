@@ -3,6 +3,6 @@ while true
 do
     echo "starting mpdev" > /tmp/mpdev.log
     echo `date` >/tmp/mpdev.log
-    mpdev -v > /tmp/mpdev.log
+    mpdev  > /tmp/mpdev.log
     sleep 1
 done
