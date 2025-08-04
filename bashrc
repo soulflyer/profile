@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # echo $PATH
-# echo "Hello from .bashrc"
+echo "Hello from .bashrc"
 
 # If not running interactively, don't do anything
 case $- in
@@ -43,7 +43,7 @@ alias egn="emacsclient -e '(deft)' -c &"
 alias ego="emacsclient -e '(org-agenda-list)' -c &"
 # alias egh="emacsclient -c -F \"'(fullscreen . maximized)\" -e '(tab-workspace-only-home)' &"
 
-alias ls="ls -G"
+alias ls="ls -G --color=auto"
 alias ll="ls -la"
 alias la="ls -a"
 alias jps="jps -l"
