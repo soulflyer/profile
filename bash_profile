@@ -3,4 +3,4 @@
 echo "Hello from .bash_profile"
 
 source ~/.profile
-source ~/.bashrc
+# source ~/.bashrc

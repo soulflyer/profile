@@ -16,6 +16,7 @@ export INFOPATH="~/.info:/opt/homebrew/Cellar/emacs-head@29/29.2_1/share/info/em
 
 # Completion stuff
 # ================
+# TODO this should probably be in acceptance_profile
 # https://stackoverflow.com/a/58308956/1671119
 export BASH_COMPLETION_COMPAT_DIR="/opt/homebrew/etc/bash_completion.d"
 [[ -r "/opt/homebrew/etc/profile.d/bash_completion.sh" ]] && . "/opt/homebrew/etc/profile.d/bash_completion.sh"
