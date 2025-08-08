@@ -43,7 +43,7 @@ alias egn="emacsclient -e '(deft)' -c &"
 alias ego="emacsclient -e '(org-agenda-list)' -c &"
 # alias egh="emacsclient -c -F \"'(fullscreen . maximized)\" -e '(tab-workspace-only-home)' &"
 
-alias ls="ls -G"
+alias ls="ls -G --color=auto"
 alias ll="ls -la"
 alias la="ls -a"
 alias jps="jps -l"
@@ -128,16 +128,16 @@ Color_Off="\[\033[0m\]"
 Red="\[\033[0;31m\]"
 Green="\[\033[0;32m\]"
 Yellow="\[\033[0;33m\]"
-Purple="\[\033[0;35m\]"
+Purple="\[\033[0;95m\]"
 Blue="\[\033[0;94m\]"
-# Note that Blue ^ is redefined to be bright blue as its unreadable on black
-# Change the 9 to a 3 to put it back
+# Note that Blue and Purple ^ are redefined to be bright blue/purple as they are unreadable on black
+# Change the 9 to a 3 to put them back
 
 PathShort="\w"
 PathFull="\W"
 
 # TODO Wrap this in an if checking for existence of __git_ps1 function
-export PS1=$Purple'$PS1START'$Color_Off'$(git branch &>/dev/null;\
+export PS1=$PS1START'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
@@ -213,4 +213,3 @@ eval "$(zoxide init --cmd c bash)"
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
-export PATH="/opt/homebrew/opt/mysql@5.7/bin:$PATH"
