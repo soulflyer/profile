@@ -3,4 +3,4 @@
 # echo $PATH
 PATH="/opt/homebrew/opt/mysql@5.7/bin:/opt/homebrew/opt/llvm/bin:/opt/homebrew/opt/texinfo/bin/:/opt/homebrew/opt/openjdk/bin:/opt/homebrew/bin:/opt/homebrew/sbin:$PATH"
 export BASH_SILENCE_DEPRECATION_WARNING=1
-export PS1START="Acceptance:"
+export PS1START="\[\033[0;33]Acceptance\[\033[0m\]:"
