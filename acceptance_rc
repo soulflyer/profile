@@ -2,6 +2,7 @@
 
 # Nice and simple. On subversion emacsdaemon checks for emacs version and links in the correct melpa dir.
 # Here I intend to just use the stable release for now, but would still like the emd alias in bashrc to work.
+# echo "Hello from acceptance_rc"
 alias emacsdaemon="emacs --daemon"
 
 source /opt/homebrew/etc/bash_completion.d/git-prompt.sh

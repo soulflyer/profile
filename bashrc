@@ -128,16 +128,15 @@ Color_Off="\[\033[0m\]"
 Red="\[\033[0;31m\]"
 Green="\[\033[0;32m\]"
 Yellow="\[\033[0;33m\]"
-Purple="\[\033[0;95m\]"
+Purple="\[\033[0;35m\]"
 Blue="\[\033[0;94m\]"
 # Note that Blue and Purple ^ are redefined to be bright blue/purple as they are unreadable on black
 # Change the 9 to a 3 to put them back
 
 PathShort="\w"
 PathFull="\W"
-
 # TODO Wrap this in an if checking for existence of __git_ps1 function
-export PS1=$PS1START'$(git branch &>/dev/null;\
+export PS1=$Purple$PS1START$Color_Off:'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
