@@ -130,8 +130,8 @@ Green="\[\033[0;32m\]"
 Yellow="\[\033[0;33m\]"
 Purple="\[\033[0;35m\]"
 Blue="\[\033[0;94m\]"
-# Note that Blue and Purple ^ are redefined to be bright blue/purple as they are unreadable on black
-# Change the 9 to a 3 to put them back
+# Note that Blue and Purple ^ may redefined to be bright blue/purple as they are unreadable on black
+# Change the 94 or 95 to a 34 or 35 to put them back
 
 PathShort="\w"
 PathFull="\W"
