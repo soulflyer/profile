@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # echo "Hello from transcendence_profile" 
 export PS1START="Transcendence"
 
