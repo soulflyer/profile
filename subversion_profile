@@ -3,3 +3,5 @@
 # echo $PATH
 # echo "Hello from .subversion_profile"
 PATH="$PATH:/usr/local/sbin"
+export PS1START="Subversion"
+export PS1COLOUR="\[\033[0;94m\]"

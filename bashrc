@@ -136,7 +136,7 @@ Blue="\[\033[0;94m\]"
 PathShort="\w"
 PathFull="\W"
 # TODO Wrap this in an if checking for existence of __git_ps1 function
-export PS1=$Yellow$PS1START$Color_Off:'$(git branch &>/dev/null;\
+export PS1=$PS1COLOUR$PS1START$Color_Off:'$(git branch &>/dev/null;\
 if [ $? -eq 0 ]; then \
   echo "$(echo `git status` | grep "nothing to commit" > /dev/null 2>&1; \
   if [ "$?" -eq "0" ]; then \
