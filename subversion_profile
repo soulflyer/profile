@@ -5,3 +5,4 @@
 PATH="$PATH:/usr/local/sbin"
 export PS1START="Subversion"
 export PS1COLOUR="\[\033[0;94m\]"
+source ~/.bashrc
