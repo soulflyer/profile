@@ -9,5 +9,5 @@ for link in \
     http://www.smbc-comics.com/ \
     http://www.leasticoulddo.com/
 do
-    open $link
+    setsid open $link
 done

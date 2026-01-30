@@ -207,8 +207,11 @@ command -v rg >/dev/null 2>&1 || export FZF_DEFAULT_COMMAND='rg --files --no-ign
 
 export _ZO_ECHO='1'
 eval "$(zoxide init --cmd c bash)"
-
+eval "$(register-python-argcomplete pipx)"
 
 # Generated for envman. Do not edit.
 [ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"
 
+
+# Created by `pipx` on 2025-09-03 02:56:41
+export PATH="$PATH:/home/iain/.local/bin"

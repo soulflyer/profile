@@ -1,2 +1,3 @@
 # echo "hello from transcendence_rc"
 source  /usr/lib/git-core/git-sh-prompt
+xmodmap ~/.Xmodmap
